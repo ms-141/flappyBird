@@ -1,0 +1,1 @@
+This program is meant to be a playable version of the hit game 'flappy bird'.
