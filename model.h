@@ -1,5 +1,5 @@
 #ifndef MODEL_H
-#define MODEl_H
+#define MODEL_H
 #include "bird.h"
 #include "set_of_pipes.h"
 
