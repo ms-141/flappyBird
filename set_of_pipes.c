@@ -10,5 +10,5 @@ void resetPipes(SetOfPipes *pipes, unsigned int new_x, unsigned int new_y) {
 }
 
 int isOffScreen(SetOfPipes *pipes, unsigned int screen_width) {
-    return (pipes->x + PIPE_WITDH) < 0; /* returns true if the right edge of the pipes is off screen */
+    return (pipes->x + PIPE_WIDTH) < 0; /* returns true if the right edge of the pipes is off screen */
 }

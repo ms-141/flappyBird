@@ -1,7 +1,7 @@
 #ifndef SET_OF_PIPES_H
 #define SET_OF_PIPES_H
 
-#define PIPE_WITDH 32
+#define PIPE_WIDTH 32
 #define PIPE_GAP_SIZE 100
 
 typedef struct
