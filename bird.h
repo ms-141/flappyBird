@@ -1,6 +1,7 @@
 #ifndef BIRD_H
 #define BIRD_H
 
+#define BIRD_VERT_START_POS 200
 #define BIRD_X_POS 50
 #define BIRD_JUMP_DELTA -45 /* bird will move up by this many pixels upon user input */
 #define BIRD_FALL_DELTA 1 /* bird will move down by this many pixels after each clock tick when not jumping */
@@ -13,6 +14,8 @@ typedef struct
                        the birds vertical pos. changes */
 } Bird;
 
+/* initializes the bird's position at the start of the game */
+void spawnBird(Bird *bird); 
 /* makes the bird jump upwards by subtracting from its y pos. */
 void birdJump(Bird *bird); 
 /* makes the bird fall downwards by adding to its y pos. */  

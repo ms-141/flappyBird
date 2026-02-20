@@ -1,5 +1,10 @@
 #include "bird.h"
 
+void spawnBird(Bird *bird) {
+    bird->x = BIRD_X_POS; /* set the bird's horizontal pos. to the defined constant */
+    bird->y = BIRD_VERT_START_POS; /* set the bird's vertical pos. to the defined constant */
+}
+
 void birdJump(Bird *bird) {
     bird->y += BIRD_JUMP_DELTA; /* change vertical pos. by the jump delta */
 }
@@ -16,7 +21,7 @@ void update_position(Bird *bird, int jump_pressed) {
 }
 
 int checkCollision(Bird *bird, SetOfPipes *pipes, unsigned int ground_height) {
-    if (bird->y >= ground_height) 
+    if (bird->y + BIRD_HEIGHT >= ground_height) 
         return 1; /* collision with the ground */
 
     if (bird->y <= 0) 
