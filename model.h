@@ -6,7 +6,7 @@
 typedef struct
 {
     Bird bird;
-    SetOfPipes pipes[3]; // 3 sets of pipes will be on the screen at any time
+    SetOfPipes pipes[3]; /* 3 sets of pipes will be on the screen at any time */
 } Model;
 
 #endif
