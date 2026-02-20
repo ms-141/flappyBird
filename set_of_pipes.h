@@ -17,7 +17,8 @@ typedef struct
 void movePipes(SetOfPipes *pipes, int delta_x); 
 /* deletes pipes that are off screen and spawns new pipes with a new height */
 void resetPipes(SetOfPipes *pipes, unsigned int new_x, unsigned int new_y); 
-/* checks if the pipes are off screen (x < 0) */
+/* checks if the pipes are off screen (x < 0) 
+1 = off screen, 0 = on screen */
 int isOffScreen(SetOfPipes *pipes, unsigned int screen_width);
 
 #endif
