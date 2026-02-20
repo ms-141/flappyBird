@@ -18,7 +18,7 @@ void birdJump(Bird *bird);
 /* makes the bird fall downwards by adding to its y pos. */  
 void birdFalling(Bird *bird); 
 /* uses birdJump and birdFalling to update the bird's position */
-void update_position(Bird *bird, int jump_pressed);
+void updatePosition(Bird *bird, int jump_pressed);
 /* checks if the bird has collided with the pipes, the ground, or the top of the screen (y = 0) 
 1 = collided, 0 = hasn't collided */
 int checkCollision(Bird *bird, SetOfPipes *pipes, unsigned int ground_height);
