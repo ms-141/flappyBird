@@ -13,11 +13,8 @@ void birdFalling(Bird *bird) {
     bird->y += BIRD_FALL_DELTA; /* change vertical pos. by the fall delta */
 }
 
-void update_position(Bird *bird, int jump_pressed) {
-    if (jump_pressed) 
-        birdJump(bird); /* if the jump button is pressed, make the bird jump */
-    else 
-        birdFalling(bird); /* otherwise, make the bird fall */
+void update_position(Bird *bird) {
+        birdFalling(bird);
 }
 
 int checkCollision(Bird *bird, SetOfPipes *pipes, unsigned int ground_height) {
