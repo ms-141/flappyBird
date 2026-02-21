@@ -13,10 +13,6 @@ void birdFalling(Bird *bird) {
     bird->y += BIRD_FALL_DELTA; /* change vertical pos. by the fall delta */
 }
 
-void update_position(Bird *bird) {
-        birdFalling(bird);
-}
-
 int checkCollision(Bird *bird, SetOfPipes *pipes, unsigned int ground_height) {
     if (bird->y + BIRD_HEIGHT >= ground_height) 
         return 1; /* collision with the ground */
