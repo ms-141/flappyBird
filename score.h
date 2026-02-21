@@ -7,4 +7,7 @@ typedef struct
 	unsigned int high_score; /* highest score out of all of the rounds */
 } Score;
 
+/* increments the current score by 1*/
+increaseScore(Score *score);
+
 #endif
