@@ -10,8 +10,8 @@
 
 typedef struct
 {
-    unsigned int x, y; /* bird's horizontal pos. is fixed but
-                       the birds vertical pos. changes */
+    unsigned int x; /* bird's horizontal pos. is fixed */
+    int y; /* the birds vertical pos. changes */
 } Bird;
 
 /* initializes the bird's position at the start of the game */
