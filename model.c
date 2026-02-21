@@ -1,6 +1,6 @@
 #include "model.h"
 
-void model_init(Model *model) {
+void modelInit(Model *model) {
     unsigned int i;
 
     spawnBird(&model->bird);
