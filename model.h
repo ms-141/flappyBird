@@ -11,4 +11,6 @@ typedef struct
     Score score;
 } Model;
 
+void model_init(Model *model);
+
 #endif
