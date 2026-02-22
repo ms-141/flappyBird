@@ -28,7 +28,6 @@ void handlePipeRespawn(Model *model) {
         if (isOffScreen(&model->pipes[i], 400)) { 
             resetPipes(&model->pipes[i], 400, 200); /* respawn the pipes at the right
                                                     edge of the screen, height isn't random currently */
-            increaseScore(&model->score); /* increase the score when the pipes are successfully passed */
         }
     }
 }
