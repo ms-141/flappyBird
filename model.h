@@ -4,6 +4,12 @@
 #include "set_of_pipes.h"
 #include "score.h"
 
+typedef enum {
+    MENU,
+    GAME,
+    GAME_OVER
+} GameState;
+
 typedef struct
 {
     Bird bird;
