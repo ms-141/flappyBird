@@ -23,6 +23,6 @@ void birdJump(Bird *bird);
 void birdFalling(Bird *bird); 
 /* checks if the bird has collided with the pipes, the ground, or the top of the screen (y = 0) 
 1 = collided, 0 = hasn't collided */
-int checkCollision(Bird *bird, SetOfPipes *pipes, unsigned int ground_height);
+int checkBirdCollision(Bird *bird, SetOfPipes *pipes, unsigned int ground_height);
 
 #endif
