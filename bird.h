@@ -13,7 +13,6 @@
  * The jump_ticks_remaining is set to 3 when the user jumps, which allows the 
  * bird to move up 15 pixels, 3 times, over 3 ticks, for a total of 45 pixels by the synchronous file.
  *
- * Currently the checkBirdCollision is passed a static 150 for the ground height by the conditional file.
 */
 
 #ifndef BIRD_H
@@ -39,8 +38,5 @@ void spawnBird(Bird *bird);
 void birdJump(Bird *bird); 
 /* makes the bird fall downwards by adding to its y pos. */  
 void birdFalling(Bird *bird); 
-/* checks if the bird has collided with the pipes, the ground, or the top of the screen (y = 0) 
-1 = collided, 0 = hasn't collided */
-int checkBirdCollision(Bird *bird, SetOfPipes *pipes, unsigned int ground_height);
 
 #endif

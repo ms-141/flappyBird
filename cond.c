@@ -10,19 +10,35 @@
  * File Status: 
  * The handleBirdCollisions functions currently passes a 
  * static 150 for the ground height.
+ * 
+ * Currently the checkBirdCollision is passed a static 150 for the ground height
+ * by the handleBirdCollisions function.
 */
 
 #include "cond.h"
-#include "bird.h"
-#include "set_of_pipes.h"
-#include "score.h"
+
+int checkBirdCollision(Bird *bird, SetOfPipes *pipes, unsigned int ground_height) {
+    if (bird->y + BIRD_HEIGHT >= ground_height) 
+        return 1; /* collision with the ground */
+
+    if (bird->y <= 0) 
+        return 1; /* collision with the top of the screen */
+    
+    if (bird->x + BIRD_WIDTH >= pipes->x && bird->x <= pipes->x + PIPE_WIDTH) {
+        if (bird->y <= pipes->y || bird->y + BIRD_HEIGHT >= pipes->y + PIPE_GAP_SIZE) {
+            return 1; /* collision with the pipes */
+        }
+    }
+
+    return 0; /* no collision */
+}
 
 void handleBirdCollision(Model *model) {
     unsigned int i;
 
     for (i = 0; i < 3; i++) {
         if (checkBirdCollision(&model->bird, &model->pipes[i], 150)) { /* check for collision with the pipes, ground height is currently 150 */
-            model->GameState = GAME_OVER; /* if the bird collides with a pipe, the game is over */
+            model->state = GAME_OVER; /* if the bird collides with a pipe, the game is over */
         }
     }
 }
