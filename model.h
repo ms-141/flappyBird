@@ -10,8 +10,8 @@
  * which screen to display and which conditions to check for.
  * The Model contains the Bird, the Pipes, and the Score.
  *
- * File Status: 
-*/
+ * File Status:
+ */
 
 #ifndef MODEL_H
 #define MODEL_H
@@ -19,7 +19,8 @@
 #include "set_of_pipes.h"
 #include "score.h"
 
-typedef enum {
+typedef enum
+{
     MENU,
     GAME,
     GAME_OVER
@@ -28,7 +29,7 @@ typedef enum {
 typedef struct
 {
     Bird bird;
-    SetOfPipes pipes[3]; /* 3 sets of pipes will be on the screen at any time */
+    SetOfPipes pipes[3]; /* at most 3 sets of pipes will be on the screen */
     Score score;
 } Model;
 
