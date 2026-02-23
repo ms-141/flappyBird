@@ -14,7 +14,7 @@
  * The GameState is only used in the handleBirdCollision 
  * function inside cond.c, but it should be used in other functions 
  * in the future.
-*/
+ */
 
 #ifndef MODEL_H
 #define MODEL_H
@@ -22,7 +22,8 @@
 #include "set_of_pipes.h"
 #include "score.h"
 
-typedef enum {
+typedef enum
+{
     MENU,
     GAME,
     GAME_OVER
@@ -31,7 +32,7 @@ typedef enum {
 typedef struct
 {
     Bird bird;
-    SetOfPipes pipes[3]; /* 3 sets of pipes will be on the screen at any time */
+    SetOfPipes pipes[3]; /* at most 3 sets of pipes will be on the screen */
     Score score;
     GameState state;
 } Model;
