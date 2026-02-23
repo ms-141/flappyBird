@@ -1,3 +1,15 @@
+/*
+ * File: model.c
+ *
+ * Team Members: Muji Shah, Gurshan Chera, Declan McCarthy
+ * Date Created: February 18, 2026
+ *
+ * Description:
+ * This file implements the functions for the Model object.
+ *
+ * File Status: 
+*/
+
 #include "model.h"
 
 void modelInit(Model *model) {

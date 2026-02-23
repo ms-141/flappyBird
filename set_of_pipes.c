@@ -1,3 +1,16 @@
+/*
+ * File: set_of_pipes.c
+ *
+ * Team Members: Muji Shah, Gurshan Chera, Declan McCarthy
+ * Date Created: February 18, 2026
+ *
+ * Description:
+ * This file implements the functions for the SetOfPipes object.
+ *
+ * File Status: 
+ * Currently the height of the pipes is not random, it is set to a static 200
+*/
+
 #include "set_of_pipes.h"
 
 void movePipes(SetOfPipes *pipes, int delta_x) {

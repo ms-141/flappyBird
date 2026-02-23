@@ -1,3 +1,15 @@
+/*
+ * File: score.c
+ *
+ * Team Members: Muji Shah, Gurshan Chera, Declan McCarthy
+ * Date Created: February 19, 2026
+ *
+ * Description:
+ * This file implements the functions for the Score object.
+ *
+ * File Status: 
+*/
+
 #include "score.h"
 
 increaseScore(Score *score) {

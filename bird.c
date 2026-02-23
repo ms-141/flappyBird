@@ -1,3 +1,15 @@
+/*
+ * File: bird.c
+ *
+ * Team Members: Muji Shah, Gurshan Chera, Declan McCarthy
+ * Date Created: February 18, 2026
+ *
+ * Description:
+ * This file implements the functions for the Bird object.
+ *
+ * File Status: 
+*/
+
 #include "bird.h"
 
 void spawnBird(Bird *bird) {
@@ -22,9 +34,9 @@ int checkBirdCollision(Bird *bird, SetOfPipes *pipes, unsigned int ground_height
     
     if (bird->x + BIRD_WIDTH >= pipes->x && bird->x <= pipes->x + PIPE_WIDTH) {
         if (bird->y <= pipes->y || bird->y + BIRD_HEIGHT >= pipes->y + PIPE_GAP_SIZE) {
-            return 1; /* Collision with the pipes */
+            return 1; /* collision with the pipes */
         }
     }
 
-    return 0; /* No collision */
+    return 0; /* no collision */
 }

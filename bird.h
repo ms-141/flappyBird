@@ -1,3 +1,21 @@
+/*
+ * File: bird.h
+ *
+ * Team Members: Muji Shah, Gurshan Chera, Declan McCarthy
+ * Date Created: February 18, 2026
+ *
+ * Description:
+ * This file defines the data structures and functions for the Bird object.
+ * The Bird has a fixed horizontal position and a variable vertical position
+ * that changes based on user input and constant falling.
+ *
+ * File Status: 
+ * The jump_ticks_remaining is set to 3 when the user jumps, which allows the 
+ * bird to move up 15 pixels, 3 times, over 3 ticks, for a total of 45 pixels by the synchronous file.
+ *
+ * Currently the checkBirdCollision is passed a static 150 for the ground height by the conditional file.
+*/
+
 #ifndef BIRD_H
 #define BIRD_H
 

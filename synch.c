@@ -1,3 +1,19 @@
+/*
+ * File: synch.c
+ *
+ * Team Members: Muji Shah, Gurshan Chera, Declan McCarthy
+ * Date Created: February 21, 2026
+ *
+ * Description:
+ * This file implements the functions for handling the synchronous events.
+ * For the pipes, as they move to the left each tick, they are checked to see if they
+ * are off screen, in which case they are moved back to the right edge of the screen
+ * with a new random height.
+ *
+ * File Status: 
+ * The height of the pipes is currently not random, it is set to a static 200.
+*/
+
 #include "synch.h"
 #include "model.h"
 

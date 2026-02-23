@@ -1,9 +1,23 @@
+/*
+ * File: cond.c
+ *
+ * Team Members: Muji Shah, Gurshan Chera, Declan McCarthy
+ * Date Created: February 22, 2026
+ *
+ * Description:
+ * This file implements the functions for handling conditional events.
+ *
+ * File Status: 
+ * The handleBirdCollisions functions currently passes a 
+ * static 150 for the ground height.
+*/
+
 #include "cond.h"
 #include "bird.h"
 #include "set_of_pipes.h"
 #include "score.h"
 
-void handle_bird_collision(Model *model) {
+void handleBirdCollision(Model *model) {
     unsigned int i;
 
     for (i = 0; i < 3; i++) {
@@ -13,7 +27,7 @@ void handle_bird_collision(Model *model) {
     }
 }
 
-void handle_score_increase(Model *model) {
+void handleScoreIncrease(Model *model) {
     unsigned int i;
 
     for (i = 0; i < 3; i++) {

@@ -1,3 +1,19 @@
+/*
+ * File: set_of_pipes.h
+ *
+ * Team Members: Muji Shah, Gurshan Chera, Declan McCarthy
+ * Date Created: February 18, 2026
+ *
+ * Description:
+ * This file defines the data structures and functions for the SetOfPipes object.
+ * A pair of pipes move at a constant rate to the left and spawn with a random height.
+ * When pipes move off screen, they are moved back to the right edge of the screen with a new random height.
+ * The bottom of the top pipe is determined by the y value and the top of the bottom pipe
+ * is determined by the y value plus the defined PIPE_GAP_SIZE.
+ *
+ * File Status: 
+*/
+
 #ifndef SET_OF_PIPES_H
 #define SET_OF_PIPES_H
 
