@@ -15,7 +15,6 @@
 */
 
 #include "synch.h"
-#include "model.h"
 
 void handleBirdMovement(Model *model) {
     Bird *bird = &model->bird;

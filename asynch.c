@@ -16,7 +16,6 @@
 */
 
 #include "asynch.h"
-#include "model.h"
 
 void handleJump(Model *model) {
     model->bird.jump_ticks_remaining = 3;
