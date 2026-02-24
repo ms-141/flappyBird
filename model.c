@@ -22,4 +22,6 @@ void modelInit(Model *model) {
         variable_distance += 150; /* increase the distance for the next set of pipes */
     }
     model->score.curr_score = 0;
+    model->score.high_score = 0;
+    model->state = MENU;
 }

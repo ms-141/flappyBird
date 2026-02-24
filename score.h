@@ -22,6 +22,6 @@ typedef struct
 } Score;
 
 /* increments the current score by 1*/
-increaseScore(Score *score);
+void increaseScore(Score *score);
 
 #endif
