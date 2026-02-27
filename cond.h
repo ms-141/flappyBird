@@ -17,7 +17,7 @@
 #define COND_H
 #include "model.h"
 #include "bird.h"
-#include "set_of_pipes.h"
+#include "pipepair.h"
 #include "score.h"
 
 /* checks if the bird has collided with the pipes, the ground, or the top of the screen (y = 0) 

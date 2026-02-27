@@ -1,5 +1,5 @@
 /*
- * File: set_of_pipes.c
+ * File: pipepair.c
  *
  * Team Members: Muji Shah, Gurshan Chera, Declan McCarthy
  * Date Created: February 18, 2026
@@ -11,7 +11,7 @@
  * Currently the height of the pipes is not random, it is set to a static 200
 */
 
-#include "set_of_pipes.h"
+#include "pipepair.h"
 
 void movePipes(SetOfPipes *pipes, int delta_x) {
     pipes->x -= delta_x; /* Move the pipes to the left by delta_x pixels */

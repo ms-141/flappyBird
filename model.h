@@ -19,7 +19,7 @@
 #ifndef MODEL_H
 #define MODEL_H
 #include "bird.h"
-#include "set_of_pipes.h"
+#include "pipepair.h"
 #include "score.h"
 
 typedef enum

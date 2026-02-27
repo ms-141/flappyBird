@@ -1,5 +1,5 @@
 /*
- * File: set_of_pipes.h
+ * File: pipepair.h
  *
  * Team Members: Muji Shah, Gurshan Chera, Declan McCarthy
  * Date Created: February 18, 2026
@@ -14,8 +14,8 @@
  * File Status: 
 */
 
-#ifndef SET_OF_PIPES_H
-#define SET_OF_PIPES_H
+#ifndef PIPEPAIR_H
+#define PIPEPAIR_H
 
 #define PIPE_WIDTH 32
 #define PIPE_GAP_SIZE 100

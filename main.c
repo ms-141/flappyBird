@@ -39,12 +39,12 @@ int main()
 
 void testModelInit()
 {
+    int i;
+    int passed = 1;
+    
     /* Make a model to test */
     Model myModel;
     modelInit(&myModel);
-
-    int i;
-    int passed = 1;
 
     /* Printing fields of test model */
     printf("Bird Position: x = %u, y = %d, jumpticks = %u \n", myModel.bird.x, myModel.bird.y, myModel.bird.jump_ticks_remaining);
