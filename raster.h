@@ -1,8 +1,30 @@
+/*
+ * File: raster.h
+ *
+ * Team Members: Muji Shah, Gurshan Chera, Declan McCarthy
+ * Date Created: February 23, 2026
+ *
+ * Description:
+ * This file declares the functions for the Raster routines.
+ *
+ * File Status:             
+*/ 
+
 #ifndef RASTER_H
 #define RASTER_H
 
+typedef unsigned char UINT8;
+typedef unsigned short UINT16;
+typedef unsigned long UINT32;
+
+#define SCREEN_WIDTH 640
+#define SCREEN_HEIGHT 400
+#define BYTES_PER_ROW 80
+#define BYTES_PER_SCREEN 32000
+#define LONGS_PER_SCREEN 8000
+
 /*----- Function: clear_screen -----
-v
+
  PURPOSE: Clears the entire screen.
 
  INPUT: Address(UINT32*): to the start of the screen
@@ -26,7 +48,6 @@ void clear_screen(UINT32 *base);
 
 */
 void clear_region(UINT32 *base, int row, int col, UINT16 length, UINT16 width);
-
 
 /*----- Function: plot_pixel -----
 
