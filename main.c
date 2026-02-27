@@ -1,8 +1,10 @@
 #include <stdio.h>
+#include <osbind.h>
 #include "model.h"
 #include "asynch.h"
 #include "synch.h"
 #include "cond.h"
+#include "raster.h"
 
 /*
 Authors: Muji Shah, Gurshan Chera, Declan McCarthy
@@ -17,6 +19,8 @@ void printTestHeader(void);
 */
 
 void testModelInit(void);
+void testClearScreen(void);
+void testPlotPixel(void);
 
 /*
 void testAsynchJump(void);
@@ -31,8 +35,16 @@ void testCondScoreIncrease(void);
 int main()
 {
 
-    /* Test calling a test function */
+    /* Test function calls: */
+    /*
     testModelInit();
+
+    testClearScreen();
+
+    testPlotPixel();
+    */
+    
+    /* Main game loop: */
 
     return 0;
 }
@@ -80,4 +92,18 @@ void testModelInit()
     {
         printf("TEST modelInit: FAIL \n");
     }
+}
+
+void testClearScreen()
+{
+    UINT32 *base = (UINT32 *)Physbase();
+    clear_screen(base);
+    printf("TEST clear_screen: CHECK OUTPUT \n");
+}
+
+void testPlotPixel()
+{
+    UINT8 *base = (UINT8 *)Physbase();
+    plot_pixel(base, 200, 250);
+    printf("TEST plot_pixel: CHECK OUTPUT \n");
 }
