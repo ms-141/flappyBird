@@ -1,5 +1,5 @@
-prog.tos: main.o asynch.o bird.o cond.o model.o score.o pipepair.o synch.o
-	cc68x -g main.o asynch.o bird.o cond.o model.o score.o pipepair.o synch.o -o prog.tos
+prog.tos: main.o asynch.o bird.o cond.o model.o score.o pipepair.o synch.o raster.o
+	cc68x -g main.o asynch.o bird.o cond.o model.o score.o pipepair.o synch.o raster.o -o prog.tos
 
 main.o: main.c model.h asynch.h synch.h cond.h
 	cc68x -g -c main.c
@@ -24,6 +24,9 @@ pipepair.o: pipepair.c pipepair.h
 
 synch.o: synch.c synch.h model.h
 	cc68x -g -c synch.c
+
+raster.o: raster.c raster.h
+	cc68x -g -c raster.c
 
 clean:
 	rm -f *.o prog.tos
