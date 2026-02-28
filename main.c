@@ -23,7 +23,9 @@ void testClearScreen(void);
 void testClearRegion(void);
 void testPlotPixel(void);
 void testPlotHorizontalLine(void);
-
+void testPlot8bitBitmap(void);
+void testPlot16bitBitmap(void);
+void testPlot32bitBitmap(void);
 
 /*
 void testAsynchJump(void);
@@ -47,8 +49,14 @@ int main()
     testClearRegion();
 
     testPlotPixel();
-    */
     
+    testPlot8bitBitmap();
+    
+    testPlot16bitBitmap();
+    
+    testPlot32bitBitmap();
+    */
+
     /* Main game loop: */
 
     return 0;
@@ -125,4 +133,26 @@ void testPlotHorizontalLine()
     UINT32 *base = (UINT32 *)Physbase();
     plot_horizontal_line(base, 200, 250, 50);
     printf("TEST plot_horizontal_line: CHECK OUTPUT \n");
+}
+
+void testPlot8bitBitmap()
+{
+    UINT8 *base = (UINT8 *)Physbase();
+    plot_8bit_bitmap(base, 100, 100, bitmap8, 16);
+    printf("TEST plot_8bit_bitmap: CHECK OUTPUT \n");
+}
+
+void testPlot16bitBitmap()
+{
+    UINT16 *base = (UINT16 *)Physbase();
+    plot_16bit_bitmap(base, 100, 100, bitmap16, 16);
+    printf("TEST plot_16bit_bitmap: CHECK OUTPUT \n");
+}
+
+void testPlot32bitBitmap()
+{
+    UINT32 *base = (UINT32 *)Physbase();
+    /* use the global all‑ones pattern */
+    plot_32bit_bitmap(base, -8, 100, bitmap32, 16);
+    printf("TEST plot_32bit_bitmap: CHECK OUTPUT \n");
 }

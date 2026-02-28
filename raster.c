@@ -42,10 +42,10 @@ void clear_region(UINT32 *base, int row, int col, UINT16 length, UINT16 width)
     /* left is clipped */
     if (start_col < 0) 
         start_col = 0;
-    /* right is clipped */
+    /* bottom is clipped */
     if (end_row > SCREEN_HEIGHT) 
         end_row = SCREEN_HEIGHT;
-    /* bottom is clipped */
+    /* right is clipped */
     if (end_col > SCREEN_WIDTH)  
         end_col = SCREEN_WIDTH;
 
@@ -57,7 +57,7 @@ void clear_region(UINT32 *base, int row, int col, UINT16 length, UINT16 width)
         {
             UINT8 *byte = (UINT8 *)base + row_offset + (c >> 3);
 
-            *byte &= ~(1 << (7 - (c & 7)));  /* clear pixel */
+            *byte &= ~(1 << (7 - (c & 7)));  /* clear pixel by masking the byte, only pixel bit is cleared */
         }
     }
 }
@@ -87,4 +87,164 @@ void plot_horizontal_line(UINT32 *base, int row, int col, UINT16 length) {
 
 void plot_vertical_line(UINT32 *base, int row, int col, UINT16 length) {
     
+}
+
+void plot_8bit_bitmap(UINT8 *base, int row, int col, const UINT8 *bitmap, UINT16 height)
+{
+    int r, c; /* r = row, c = column */
+
+    int start_row = row;
+    int start_col = col;
+    int end_row = row + height;
+    int end_col = col + 8;   /* fixed width */
+
+    /* completely off-screen (return) */
+    if (end_row <= 0 || end_col <= 0 ||
+        start_row >= SCREEN_HEIGHT ||
+        start_col >= SCREEN_WIDTH)
+        return;
+
+    /* top is clipped */
+    if (start_row < 0)
+    {
+        bitmap += -start_row;
+        start_row = 0;
+    }
+    /* left is clipped */
+    if (start_col < 0)
+        start_col = 0;
+    /* bottom is clipped */
+    if (end_row > SCREEN_HEIGHT)
+        end_row = SCREEN_HEIGHT;
+    /* right is clipped */
+    if (end_col > SCREEN_WIDTH)
+        end_col = SCREEN_WIDTH;
+
+    for (r = start_row; r < end_row; r++)
+    {
+        int row_index = r - start_row; /* row index in the bitmap */
+        UINT8 data = bitmap[row_index];
+
+        unsigned int row_offset = (r << 6) + (r << 4);
+
+        for (c = start_col; c < end_col; c++)
+        {
+            int bit_index = c - col;
+
+            /* if the current bit in the bitmap is set, draw it */
+            if (data & (1 << (7 - bit_index)))
+            {
+                UINT8 *byte = base + row_offset + (c >> 3);
+
+                *byte |= 1 << (7 - (c & 7));
+            }
+        }
+    }
+}
+
+void plot_16bit_bitmap(UINT16 *base, int row, int col, const UINT16 *bitmap, UINT16 height) {
+    int r, c; /* r = row, c = column */
+
+    int start_row = row;
+    int start_col = col;
+    int end_row = row + height;
+    int end_col = col + 16;   /* fixed width for 16-bit bitmap */
+
+    UINT8 *base8 = (UINT8 *)base;
+
+    /* completely off-screen (return) */
+    if (end_row <= 0 || end_col <= 0 ||
+        start_row >= SCREEN_HEIGHT ||
+        start_col >= SCREEN_WIDTH)
+        return;
+
+    /* top is clipped */
+    if (start_row < 0)
+    {
+        bitmap += -start_row;
+        start_row = 0;
+    }
+    /* left is clipped */
+    if (start_col < 0)
+        start_col = 0;
+    /* bottom is clipped */
+    if (end_row > SCREEN_HEIGHT)
+        end_row = SCREEN_HEIGHT;
+    /* right is clipped */
+    if (end_col > SCREEN_WIDTH)
+        end_col = SCREEN_WIDTH;
+    for (r = start_row; r < end_row; r++)
+    {
+        int row_index = r - start_row; /* row index in the bitmap */
+        UINT16 data = bitmap[row_index];
+
+        unsigned int row_offset = (r << 6) + (r << 4);
+
+        for (c = start_col; c < end_col; c++)
+        {
+            int bit_index = c - col;
+
+            /* if the current bit in the bitmap is set, draw it */
+            if (data & (1U << (15 - bit_index)))
+            {
+                UINT8 *byte = base8 + row_offset + (c >> 3);
+
+                *byte |= 1 << (7 - (c & 7));
+            }
+        }
+    }
+}
+
+void plot_32bit_bitmap(UINT32 *base, int row, int col, const UINT32 *bitmap, UINT16 height) 
+{
+    int r, c;
+
+    int start_row = row;
+    int start_col = col;
+    int end_row = row + height;
+    int end_col = col + 32;   /* fixed width for 32-bit bitmap */
+
+    UINT8 *base8 = (UINT8 *)base;
+
+    /* completely off-screen (return) */
+    if (end_row <= 0 || end_col <= 0 ||
+        start_row >= SCREEN_HEIGHT ||
+        start_col >= SCREEN_WIDTH)
+        return;
+
+    /* top is clipped */
+    if (start_row < 0)
+    {
+        bitmap += -start_row;
+        start_row = 0;
+    }
+    /* left is clipped */
+    if (start_col < 0)
+        start_col = 0;
+    /* bottom is clipped */
+    if (end_row > SCREEN_HEIGHT)
+        end_row = SCREEN_HEIGHT;
+    /* right is clipped */
+    if (end_col > SCREEN_WIDTH)
+        end_col = SCREEN_WIDTH;
+
+    for (r = start_row; r < end_row; r++)
+    {
+        int row_index = r - start_row; /* row index in the bitmap */
+        UINT32 data = bitmap[row_index];
+
+        unsigned int row_offset = (r << 6) + (r << 4);
+
+        for (c = start_col; c < end_col; c++)
+        {
+            int bit_index = c - col;
+
+            /* if the current bit in the bitmap is set, draw it */
+            if (data & (1UL << (31 - bit_index)))
+            {
+                UINT8 *byte = base8 + row_offset + (c >> 3);
+                *byte |= 1 << (7 - (c & 7));
+            }
+        }
+    }
 }
