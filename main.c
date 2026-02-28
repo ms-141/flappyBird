@@ -22,6 +22,8 @@ void testModelInit(void);
 void testClearScreen(void);
 void testClearRegion(void);
 void testPlotPixel(void);
+void testPlotHorizontalLine(void);
+
 
 /*
 void testAsynchJump(void);
@@ -116,4 +118,11 @@ void testPlotPixel()
     UINT8 *base = (UINT8 *)Physbase();
     plot_pixel(base, 200, 250);
     printf("TEST plot_pixel: CHECK OUTPUT \n");
+}
+
+void testPlotHorizontalLine() 
+{
+    UINT32 *base = (UINT32 *)Physbase();
+    plot_horizontal_line(base, 200, 250, 50);
+    printf("TEST plot_horizontal_line: CHECK OUTPUT \n");
 }

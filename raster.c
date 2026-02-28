@@ -84,3 +84,7 @@ void plot_horizontal_line(UINT32 *base, int row, int col, UINT16 length) {
             }   
         }
 }
+
+void plot_vertical_line(UINT32 *base, int row, int col, UINT16 length) {
+    
+}
