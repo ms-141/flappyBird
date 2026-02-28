@@ -68,7 +68,7 @@ void plot_pixel(UINT8 *base, int row, int col);
 
  INPUT: Address(UINT32*): to the start of the screen
         Position(row,col): the coordinates of the leftmost pixel of the horizontal line
-        Length: the lenth in pixels of the line
+        Length: the length in pixels of the line
 
  OUTPUT: None
 */
@@ -81,7 +81,7 @@ void plot_horizontal_line(UINT32 *base, int row, int col, UINT16 length);
 
  INPUT: Address(UINT32*): to the start of the screen
         Position(row,col): the coordinates of the topmost pixel of the vertical line
-        Length: the lenth in pixels of the line
+        Length: the length in pixels of the line
 
  OUTPUT: None
 */
@@ -107,7 +107,7 @@ void plot_line(UINT32 *base, int start_row, int start_col, int end_row, int end_
 
  INPUT: Address(UINT32*): to the start of the screen
         Position(row,col): the coordinates of the top left pixel of the rectangle
-        Length: the lenth (number of rows) in pixels of the rectangle
+        Length: the length (number of rows) in pixels of the rectangle
         Width: the width (number of columns) in pixels of the rectangle
 
  OUTPUT: None
@@ -121,7 +121,7 @@ void plot_rectangle(UINT32 *base, int row, int col, UINT16 length, UINT16 width)
 
  INPUT: Address(UINT32*): to the start of the screen
         Position(row,col): the coordinates of the top left pixel of the square
-        Side: the lenth of each side, in pixels, of the square
+        Side: the length of each side, in pixels, of the square
 
  OUTPUT: None
 */
@@ -135,7 +135,7 @@ void plot_square(UINT32 *base, int row, int col, UINT16 side);
  INPUT: Address(UINT32*): to the start of the screen
         Position(row,col): the coordinates of the pixel of the 90° angle of the triangle
         Base: the length (number of columns) of the base in pixels of the triangle
-        Height: the lenth (number of rows) of the height in pixels of the triangle
+        Height: the length (number of rows) of the height in pixels of the triangle
         Direction: Describes where the coordinate is relative to the rest of the triangle
               0 - Coordinate is the top left point of the triangle
               1 - Coordinate is the top right point of the triangle
@@ -154,7 +154,7 @@ void plot_triangle(UINT32 *base, int row, int col, UINT16 triangle_base, UINT16 
 
  INPUT: Address(UINT8*): to the start of the screen
         Position(row,col): the coordinates of the top left pixel of the bitmap
-        Height: the lenth (number of rows) of the height in pixels of the bitmap
+        Height: the length (number of rows) of the height in pixels of the bitmap
 
  OUTPUT: None
 */
@@ -167,7 +167,7 @@ void plot_8bit_bitmap(UINT8 *base, int row, int col, const UINT8 *bitmap, UINT16
 
  INPUT: Address(UINT16*): to the start of the screen
         Position(row,col): the coordinates of the top left pixel of the bitmap
-        Height: the lenth (number of rows) of the height in pixels of the bitmap
+        Height: the length (number of rows) of the height in pixels of the bitmap
 
  OUTPUT: None
 */
@@ -180,7 +180,7 @@ void plot_16bit_bitmap(UINT16 *base, int row, int col, const UINT16 *bitmap, UIN
 
  INPUT: Address(UINT32*): to the start of the screen
         Position(row,col): the coordinates of the top left pixel of the bitmap
-        Height: the lenth (number of rows) of the height in pixels of the bitmap
+        Height: the length (number of rows) of the height in pixels of the bitmap
 
  OUTPUT: None
 */
