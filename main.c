@@ -20,6 +20,7 @@ void printTestHeader(void);
 
 void testModelInit(void);
 void testClearScreen(void);
+void testClearRegion(void);
 void testPlotPixel(void);
 
 /*
@@ -40,6 +41,8 @@ int main()
     testModelInit();
 
     testClearScreen();
+
+    testClearRegion();
 
     testPlotPixel();
     */
@@ -99,6 +102,13 @@ void testClearScreen()
     UINT32 *base = (UINT32 *)Physbase();
     clear_screen(base);
     printf("TEST clear_screen: CHECK OUTPUT \n");
+}
+
+void testClearRegion()
+{
+    UINT32 *base = (UINT32 *)Physbase();
+    clear_region(base, 0, 0, 100, 100);
+    printf("TEST clear_region: CHECK OUTPUT \n");
 }
 
 void testPlotPixel()
