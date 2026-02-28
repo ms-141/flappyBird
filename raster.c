@@ -30,3 +30,16 @@ void plot_pixel(UINT8 *base, int row, int col) {
         *(base + row_offset + (col >> 3)) |= 1 << (7 - (col & 7));
         }
 }
+
+void plot_horizontal_line(UINT32 *base, int row, int col, UINT16 length) {
+     unsigned int row_offset;
+    if (col >= 0 && col < SCREEN_WIDTH && 
+        row >= 0 && row < SCREEN_HEIGHT) {
+            row_offset = (row << 6) + (row << 4);   /* row * 80 */
+            while (length > 0 && col < SCREEN_WIDTH) {
+                *(base + row_offset + (col >> 3)) |= 1 << (7 - (col & 7));
+                col++;
+                length--;
+            }   
+        }
+}
