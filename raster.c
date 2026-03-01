@@ -76,7 +76,7 @@ void plot_horizontal_line(UINT32 *base, int row, int col, UINT16 length)
 {
     UINT32 SOLID = 0xFFFFFFFF;
 	UINT32 p1, p2;
-	int y, i, end;
+	int x, i, end;
 	int shift_F, shift_B;
 	UINT32 mask;
 	UINT32 *place;
@@ -95,25 +95,25 @@ void plot_horizontal_line(UINT32 *base, int row, int col, UINT16 length)
 	}
 	
 	place = base + row * 20;
-	y = col >> 5;		/* divide by 32 */
+	x = col >> 5;		/* divide by 32 */
 	end = ((col + length) - 1) >> 5;
 	shift_F = col & 31;
 	shift_B = (32 - 1) - (((col + length) - 1) & 31);
 	
-	if (y == end)
+	if (x == end)
 	{
 		p1 = SOLID >> shift_F;
 		p2 = SOLID << shift_B;
 		mask = (p1) & (p2);
-		*(place + y) |= mask;
+		*(place + x) |= mask;
 	}
 	else
 	{
 		p1 = SOLID >> shift_F;
 		p2 = SOLID << shift_B;
-		*(place + y) |= p1;
+		*(place + x) |= p1;
 		
-		for (i = y + 1; i < end; i++)
+		for (i = x + 1; i < end; i++)
 		{
 			*(place + i) = SOLID;
 		}
