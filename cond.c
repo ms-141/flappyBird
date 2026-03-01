@@ -39,8 +39,8 @@ void handleBirdCollision(Model *model) {
     if (model->state != PLAYING)
         return;
     for (i = 0; i < 3; i++) {
-        if (checkBirdCollision(&model->bird, &model->pipes[i], 150)) { /* check for collision with the pipes, ground height is currently 150 */
-            model->state = GAME_OVER; /* if the bird collides with a pipe, the game is over */
+        if (checkBirdCollision(&model->bird, &model->pipes[i], 150)) {
+            model->state = GAME_OVER;
         }
     }
 }
