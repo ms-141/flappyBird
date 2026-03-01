@@ -21,6 +21,7 @@ void printTestHeader(void);
 void testModelInit(void);
 void testClearScreen(void);
 void testPlotPixel(void);
+void testPlotHorizontalLine(void);
 
 /*
 void testAsynchJump(void);
@@ -42,6 +43,8 @@ int main()
     testClearScreen();
 
     testPlotPixel();
+
+    testPlotHorizontalLine();
     */
 
     /* Main game loop: */
@@ -106,4 +109,11 @@ void testPlotPixel()
     UINT8 *base = (UINT8 *)Physbase();
     plot_pixel(base, 200, 250);
     printf("TEST plot_pixel: CHECK OUTPUT \n");
+}
+
+void testPlotHorizontalLine() 
+{
+    UINT32 *base = (UINT32 *)Physbase();
+    plot_horizontal_line(base, 50, 0, 640);
+    printf("TEST plot_horizontal_line: CHECK OUTPUT \n");
 }

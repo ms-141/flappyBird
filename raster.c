@@ -72,17 +72,53 @@ void plot_pixel(UINT8 *base, int row, int col) {
         }
 }
 
-void plot_horizontal_line(UINT32 *base, int row, int col, UINT16 length) {
-     unsigned int row_offset;
-    if (col >= 0 && col < SCREEN_WIDTH && 
-        row >= 0 && row < SCREEN_HEIGHT) {
-            row_offset = (row << 6) + (row << 4);   /* row * 80 */
-            while (length > 0 && col < SCREEN_WIDTH) {
-                *(base + row_offset + (col >> 3)) |= 1 << (7 - (col & 7));
-                col++;
-                length--;
-            }   
-        }
+void plot_horizontal_line(UINT32 *base, int row, int col, UINT16 length)
+{
+    UINT32 SOLID = 0xFFFFFFFF;
+	UINT32 p1, p2;
+	int y, i, end;
+	int shift_F, shift_B;
+	UINT32 mask;
+	UINT32 *place;
+	
+	/* line completely off-screen (return) */
+	if (row < 0 || row >= SCREEN_HEIGHT) {
+		return;
+	}
+	/* left is clipped */
+	if (col < 0) {
+		col = 0;
+	}
+	/* right is clipped */
+	if (col >= SCREEN_WIDTH) {
+		col = SCREEN_WIDTH - 1;
+	}
+	
+	place = base + row * 20;
+	y = col >> 5;		/* divide by 32 */
+	end = ((col + length) - 1) >> 5;
+	shift_F = col & 31;
+	shift_B = (32 - 1) - (((col + length) - 1) & 31);
+	
+	if (y == end)
+	{
+		p1 = SOLID >> shift_F;
+		p2 = SOLID << shift_B;
+		mask = (p1) & (p2);
+		*(place + y) |= mask;
+	}
+	else
+	{
+		p1 = SOLID >> shift_F;
+		p2 = SOLID << shift_B;
+		*(place + y) |= p1;
+		
+		for (i = y + 1; i < end; i++)
+		{
+			*(place + i) = SOLID;
+		}
+		*(place + end) |= p2;
+	}
 }
 
 void plot_vertical_line(UINT32 *base, int row, int col, UINT16 length) {
