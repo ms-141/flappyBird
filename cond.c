@@ -52,7 +52,7 @@ void handlePipeRespawn(Model *model) {
         return;
     for (i = 0; i < 3; i++) {
         if (isOffScreen(&model->pipes[i], 640)) { 
-            resetPipes(&model->pipes[i]);
+            resetPipes(&model->pipes[i], 640);
         }
     }
 }
