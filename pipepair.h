@@ -19,6 +19,7 @@
 
 #define PIPE_WIDTH 32
 #define PIPE_GAP_SIZE 100
+#define PIPE_RESPAWN_X 640
 
 typedef struct
 {
@@ -32,7 +33,7 @@ typedef struct
 /* moves the pipes by the given speed (delta_x) */
 void movePipes(SetOfPipes *pipes, int delta_x); 
 /* deletes pipes that are off screen and spawns new pipes with a new height */
-void resetPipes(SetOfPipes *pipes, unsigned int new_x, unsigned int new_y); 
+void resetPipes(SetOfPipes *pipes); 
 /* checks if the pipes are off screen (x < 0) 
 1 = off screen, 0 = on screen */
 int isOffScreen(SetOfPipes *pipes, unsigned int screen_width);
