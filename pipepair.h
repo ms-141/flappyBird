@@ -19,6 +19,7 @@
 
 #define PIPE_WIDTH 32
 #define PIPE_GAP_SIZE 100
+#define PIPE_MOVE_SPEED 3
 #define PIPE_RESPAWN_X 640
 
 typedef struct
@@ -30,8 +31,8 @@ typedef struct
                 
 } SetOfPipes;
 
-/* moves the pipes by the given speed (delta_x) */
-void movePipes(SetOfPipes *pipes, int delta_x); 
+/* moves the pipes by PIPE_MOVE_SPEED pixels to the left */
+void movePipes(SetOfPipes *pipes); 
 /* deletes pipes that are off screen and spawns new pipes with a new height */
 void resetPipes(SetOfPipes *pipes); 
 /* checks if the pipes are off screen (x < 0) 

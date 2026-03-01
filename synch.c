@@ -32,6 +32,6 @@ void handlePipeMovement(Model *model) {
     if (model->state != PLAYING)
         return;
     for (i = 0; i < 3; i++) {
-        movePipes(&model->pipes[i], 3); /* move the pipes to the left by 3 pixels */
+        movePipes(&model->pipes[i]);
     }
 }

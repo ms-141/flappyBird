@@ -13,8 +13,8 @@
 
 #include "pipepair.h"
 
-void movePipes(SetOfPipes *pipes, int delta_x) {
-    pipes->x -= delta_x; /* Move the pipes to the left by delta_x pixels */
+void movePipes(SetOfPipes *pipes) {
+    pipes->x -= PIPE_MOVE_SPEED; /* Move the pipes to the left by PIPE_MOVE_SPEED pixels */
 }
 
 void resetPipes(SetOfPipes *pipes) {
