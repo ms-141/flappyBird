@@ -36,6 +36,8 @@ int checkBirdCollision(Bird *bird, SetOfPipes *pipes, unsigned int ground_height
 void handleBirdCollision(Model *model) {
     unsigned int i;
 
+    if (model->state != PLAYING)
+        return;
     for (i = 0; i < 3; i++) {
         if (checkBirdCollision(&model->bird, &model->pipes[i], 150)) { /* check for collision with the pipes, ground height is currently 150 */
             model->state = GAME_OVER; /* if the bird collides with a pipe, the game is over */
@@ -43,9 +45,23 @@ void handleBirdCollision(Model *model) {
     }
 }
 
+void handlePipeRespawn(Model *model) {
+    unsigned int i;
+
+    if (model->state != PLAYING)
+        return;
+    for (i = 0; i < 3; i++) {
+        if (isOffScreen(&model->pipes[i], 640)) { 
+            resetPipes(&model->pipes[i]);
+        }
+    }
+}
+
 void handleScoreIncrease(Model *model) {
     unsigned int i;
 
+    if (model->state != PLAYING)
+        return;
     for (i = 0; i < 3; i++) {
         if (model->pipes[i].x + PIPE_WIDTH <= model->bird.x) { /* if the bird has just passed through the pipes */
             increaseScore(&model->score);

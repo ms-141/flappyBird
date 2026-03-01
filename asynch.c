@@ -8,36 +8,38 @@
  * This file implements the functions for handling asynchronous events, such as user input.
  *
  * File Status: 
- * Currently, the handleQuitToMenu function is not implemented, because
- * the menu screen is not implemented.
+ * Currently, the handleQuitToMenu function only sets the Gamestate to 
+ * MENU, because the menu screen is not implemented.
  *
- * The handle2p and handleRetry functions are currently the same as handle1p
- * because there is no 2 player mode or game over screen implemented.
+ * The handle2p is currently the same as handle1p because there is no 
+ * 2 player mode implemented.
 */
 
 #include "asynch.h"
 
 void handleJump(Model *model) {
-    model->bird.jump_ticks_remaining = 3;
+    if (model->state == PLAYING)
+        model->bird.jump_ticks_remaining = 3;
 }
 
 void handle1p(Model *model) {
-    modelInit(model);
+    if (model->state == MENU)
+        modelInit(model);
 }
 
 /* currently the same as handle1p */
 void handle2p(Model *model) {
-    modelInit(model);
+    if (model->state == MENU)
+        modelInit(model);
 }
 
-/* currently the same as handle1p */
 void handleRetry(Model *model) {
-    modelInit(model);
+    if (model->state == GAME_OVER)
+        modelInit(model);
 }
 
-/*
 void handleQuitToMenu(Model *model) {
-    modelInit(model);
+    model->state = MENU;
 }
-*/
+
 
