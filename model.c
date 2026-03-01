@@ -18,7 +18,7 @@ void modelInit(Model *model) {
 
     spawnBird(&model->bird);
     for (i = 0; i < 3; i++) {
-        resetPipes(&model->pipes[i]);
+        resetPipes(&model->pipes[i], variable_distance);
         variable_distance += 150; /* increase the distance for the next set of pipes */
     }
     model->score.curr_score = 0;
