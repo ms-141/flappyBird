@@ -27,6 +27,3 @@ synch.o: synch.c synch.h model.h
 
 raster.o: raster.c raster.h
 	cc68x -g -c raster.c
-
-clean:
-	rm -f *.o prog.tos
