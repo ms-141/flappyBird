@@ -32,9 +32,9 @@ int main()
     testPlotHorizontalLine();
 
     testPlotVerticalLine();
-    
+
     testPlot8bitBitmap();
-   
+
     testPlot16bitBitmap();
 
     testPlot32bitBitmap();
@@ -66,24 +66,23 @@ void testPlotPixel()
     printf("TEST plot_pixel: CHECK OUTPUT \n");
 }
 
-void testPlotHorizontalLine() 
+void testPlotHorizontalLine()
 {
     UINT32 *base = (UINT32 *)Physbase();
     plot_horizontal_line(base, 50, 0, 640);
     printf("TEST plot_horizontal_line: CHECK OUTPUT \n");
 }
 
-void testPlotVerticalLine() {
-	UINT32 *base = (UINT32 *)Physbase();
+void testPlotVerticalLine()
+{
+    UINT32 *base = (UINT32 *)Physbase();
     plot_vertical_line(base, 0, 350, 400);
     printf("TEST plot_vertical_line: CHECK OUTPUT \n");
 }
 
-
-UINT8 bitmap_8bit [8] = {
-	0xFF, 0xFF, 0xFF, 0xFF,
-	0xFF, 0xFF, 0xFF, 0xFF
-};
+UINT8 bitmap_8bit[8] = {
+    0xFF, 0xFF, 0xFF, 0xFF,
+    0xFF, 0xFF, 0xFF, 0xFF};
 
 void testPlot8bitBitmap()
 {
@@ -92,12 +91,11 @@ void testPlot8bitBitmap()
     printf("TEST plot_8bit_bitmap: CHECK OUTPUT \n");
 }
 
-UINT16 bitmap_16bit [16] = {
-	0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF,
-	0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF,
-	0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF,
-	0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF
-};
+UINT16 bitmap_16bit[16] = {
+    0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF,
+    0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF,
+    0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF,
+    0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF};
 
 void testPlot16bitBitmap()
 {
@@ -106,20 +104,33 @@ void testPlot16bitBitmap()
     printf("TEST plot_16bit_bitmap: CHECK OUTPUT \n");
 }
 
-UINT32 bitmap_32bit [32] = {
-	0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF,
-	0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF,
-	0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 
-	0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 
-    0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 
-    0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 
+UINT32 bitmap_32bit[32] = {
     0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF,
-    0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF
-};
+    0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF,
+    0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF,
+    0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF,
+    0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF,
+    0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF,
+    0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF,
+    0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF};
 
 void testPlot32bitBitmap()
 {
     UINT32 *base = (UINT32 *)Physbase();
     plot_32bit_bitmap(base, 100, 300, bitmap_32bit, 32);
     printf("TEST plot_32bit_bitmap: CHECK OUTPUT \n");
+}
+
+void testPlotRectangle()
+{
+    UINT32 *base = (UINT32 *)Physbase();
+    plot_rectangle(base, 250, 350, 150, 50);
+    printf('TEST plot_rectangle: CHECK OUTPUT \n');
+}
+
+void testPlotSquare()
+{
+    UINT32 *base = (UINT32 *)Physbase();
+    plot_square(base, 100, 200, 25, 25);
+    printf('TEST plot_square: CHECK OUTPUT \n');
 }
