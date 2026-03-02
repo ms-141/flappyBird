@@ -1,5 +1,5 @@
 /*
- * File: rnderTST.c
+ * File: rndertst.c
  *
  * Team Members: Muji Shah, Gurshan Chera, Declan McCarthy
  * Date Created: February 28, 2026
@@ -26,6 +26,7 @@ int main()
 
     int i;
 
+    clear_screen((UINT32 *)base);
     printf("=== Rendering Tests ===\n");
 
     /* Test 1: Initial state */
@@ -60,14 +61,13 @@ int main()
     Cnecin(); 
     clear_screen((UINT32 *)base);
 
-
     /* Test 4: Score increased */
     modelInit(&myModel);
     increaseScore(&myModel.score);
     render(&myModel, base);
     while (!Cconis())
-    ; 
-    Cnecin(); 
+    ;
+    Cnecin();
     clear_screen((UINT32 *)base);
 
     return 0;

@@ -35,10 +35,10 @@ void render_pipe(const SetOfPipes *pipes, UINT8 *base)
     unsigned int bottom_pipe_height = SCREEN_HEIGHT - bottom_pipe_y;
 
     /* Top pipe */
-    /*plot_rectangle((UINT32 *)base, 0, pipes->x, pipes->y, PIPE_WIDTH);*/
+    plot_rectangle((UINT32 *)base, 0, pipes->x, pipes->y, PIPE_WIDTH);
 
     /* Bottom pipe */
-    /*plot_rectangle((UINT32 *)base, bottom_pipe_y, pipes->x, bottom_pipe_height, PIPE_WIDTH);*/
+    plot_rectangle((UINT32 *)base, bottom_pipe_y, pipes->x, bottom_pipe_height, PIPE_WIDTH);
 }
 
 void render_score(const Score *score, UINT8 *base) 

@@ -4,6 +4,9 @@ prog.tos: main.o asynch.o bird.o cond.o model.o score.o pipepair.o synch.o raste
 test.tos: test.o asynch.o bird.o cond.o model.o score.o pipepair.o synch.o
 	cc68x -g test.o asynch.o bird.o cond.o model.o score.o pipepair.o synch.o -o test.tos
 
+rndertst.tos: rndertst.o bird.o model.o score.o pipepair.o synch.o raster.o renderer.o
+	cc68x -g rndertst.o bird.o model.o score.o pipepair.o synch.o raster.o renderer.o -o rndertst.tos
+
 results.txt: test.tos
 	test.tos > results.txt
 
@@ -12,6 +15,9 @@ main.o: main.c model.h asynch.h synch.h cond.h
 
 test.o: test.c model.h asynch.h synch.h cond.h
 	cc68x -g -c test.c
+
+rndertst.o: rndertst.c model.h synch.h raster.h renderer.h
+	cc68x -g -c rndertst.c
 
 asynch.o: asynch.c asynch.h model.h
 	cc68x -g -c asynch.c
