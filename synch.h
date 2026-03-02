@@ -6,7 +6,7 @@
  *
  * Description:
  * This file defines the functions for handling synchronous events, such as 
- * the movement of the bird and pipes, and the respawning of the pipes.
+ * the movement of the bird and pipes.
  *
  * File Status: 
 */
