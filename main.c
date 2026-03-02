@@ -17,6 +17,9 @@ void testClearScreen(void);
 void testPlotPixel(void);
 void testPlotHorizontalLine(void);
 void testPlotVerticalLine(void);
+void testPlot8bitBitmap(void);
+void testPlot16bitBitmap(void);
+void testPlot32bitBitmap(void);
 
 int main()
 {
