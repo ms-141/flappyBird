@@ -128,31 +128,42 @@ void plot_horizontal_line(UINT32 *base, int row, int col, UINT16 length)
 
 void plot_vertical_line(UINT32 *base, int row, int col, UINT16 length)
 {
-    int temp;
-    UINT32 pattern;
-    UINT32 *screen_long;
-    int end = (row + length) - 1;
+    UINT32 SOLID = 0x80000000; 
+    UINT32 mask;
+    int start_row, end_row;
+    int word_index;
+    int bit_shift;
+    UINT32 *place;
+    int r;
 
-    /* line on the screen */
-    if (col >= 0 && col < SCREEN_WIDTH)
+    /* completely off-screen (return) */
+    if (col < 0 || col >= SCREEN_WIDTH)
+        return;
+
+    /* clip top */
+    if (row < 0)
     {
-        /* top is clipped */
-        if (row < 0)
-        {
-            row = 0;
-        }
-        /* bottom is clipped */
-        if (end > 399)
-        {
-            end = SCREEN_HEIGHT - 1;
-        }
-        pattern = 1 << (31 - (col & 31));
-        screen_long = base + row * 20 + (col >> 5);
-        for (; row <= end; row++)
-        {
-            *screen_long |= pattern;
-            screen_long = screen_long + 20;
-        }
+        length += row; 
+        row = 0;
+    }
+    /* clip bottom */
+    if (row + length > SCREEN_HEIGHT)
+    {
+        length = SCREEN_HEIGHT - row;
+    }
+
+    if (length <= 0)
+        return;
+
+    word_index = col >> 5; /* divide by 32 */
+    bit_shift = 31 - (col & 31);  
+
+    mask = SOLID >> (31 - bit_shift); 
+
+    for (r = row; r < row + length; r++)
+    {
+        place = base + r * 20 + word_index;
+        *place |= mask;
     }
 }
 
