@@ -128,12 +128,12 @@ void testPlotRectangle()
 {
     UINT32 *base = (UINT32 *)Physbase();
     plot_rectangle(base, 250, 350, 150, 50);
-    printf('TEST plot_rectangle: CHECK OUTPUT \n');
+    printf("TEST plot_rectangle: CHECK OUTPUT \n");
 }
 
 void testPlotSquare()
 {
     UINT32 *base = (UINT32 *)Physbase();
-    plot_square(base, 100, 200, 25, 25);
-    printf('TEST plot_square: CHECK OUTPUT \n');
+    plot_square(base, 100, 200, 25);
+    printf("TEST plot_square: CHECK OUTPUT \n");
 }
