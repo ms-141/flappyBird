@@ -17,7 +17,7 @@ void testModelInit(void);
 void testClearScreen(void);
 void testPlotPixel(void);
 void testPlotHorizontalLine(void);
-void testPlotVerticalLine();
+void testPlotVerticalLine(void);
 
 int main()
 {
@@ -33,6 +33,8 @@ int main()
     testPlotPixel();
 
     testPlotHorizontalLine();
+
+    testPlotVerticalLine();
     
     testPlot8bitBitmap();
    
@@ -73,6 +75,13 @@ void testPlotHorizontalLine()
     plot_horizontal_line(base, 50, 0, 640);
     printf("TEST plot_horizontal_line: CHECK OUTPUT \n");
 }
+
+void testPlotVerticalLine() {
+	UINT32 *base = (UINT32 *)Physbase();
+    plot_vertical_line(base, 0, 350, 400);
+    printf("TEST plot_vertical_line: CHECK OUTPUT \n");
+}
+
 
 UINT8 bitmap_8bit [8] = {
 	0xFF, 0xFF, 0xFF, 0xFF,
