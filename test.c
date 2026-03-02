@@ -9,8 +9,8 @@
  * These tests simulate events by calling event handler functions directly
  * (instead of waiting for real keyboard input).
  *
- * File Status: 
-*/
+ * File Status:
+ */
 
 #include <stdio.h>
 #include "model.h"
@@ -95,11 +95,11 @@ int testModelInit(void)
     if (myModel.bird.jump_ticks_remaining != 0)
         passed = 0;
 
-    if (myModel.pipes[0].x != 0 || myModel.pipes[0].y != 200)
+    if (myModel.pipes[0].x != 300 || myModel.pipes[0].y != 200)
         passed = 0;
-    if (myModel.pipes[1].x != 150 || myModel.pipes[1].y != 200)
+    if (myModel.pipes[1].x != 450 || myModel.pipes[1].y != 200)
         passed = 0;
-    if (myModel.pipes[2].x != 300 || myModel.pipes[2].y != 200)
+    if (myModel.pipes[2].x != 600 || myModel.pipes[2].y != 200)
         passed = 0;
 
     if (myModel.score.curr_score != 0)
@@ -152,7 +152,7 @@ int testAsynchReset1p(void)
 
     if (model.bird.x != BIRD_X_POS || model.bird.y != BIRD_VERT_START_POS)
         passed = 0;
-    if (model.pipes[0].x != 0 || model.pipes[1].x != 150 || model.pipes[2].x != 300)
+    if (model.pipes[0].x != 300 || model.pipes[1].x != 450 || model.pipes[2].x != 600)
         passed = 0;
     if (model.score.curr_score != 0 || model.score.high_score != 0)
         passed = 0;
@@ -201,11 +201,11 @@ int testSynchPipeMovement(void)
     handlePipeMovement(&model);
     printModelState("[testSynchPipeMovement] after", &model);
 
-    if (model.pipes[0].x != -3)
+    if (model.pipes[0].x != 297)
         passed = 0;
-    if (model.pipes[1].x != 147)
+    if (model.pipes[1].x != 447)
         passed = 0;
-    if (model.pipes[2].x != 297)
+    if (model.pipes[2].x != 597)
         passed = 0;
 
     printf("TEST handlePipeMovement: %s\n", passed ? "PASS" : "FAIL");
