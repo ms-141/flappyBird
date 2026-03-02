@@ -1,14 +1,22 @@
+/*
+ * File: test.c
+ *
+ * Team Members: Muji Shah, Gurshan Chera, Declan McCarthy
+ * Date Created: February 27, 2026
+ *
+ * Description:
+ * Test driver for Checkpoint 2.
+ * These tests simulate events by calling event handler functions directly
+ * (instead of waiting for real keyboard input).
+ *
+ * File Status: 
+*/
+
 #include <stdio.h>
 #include "model.h"
 #include "asynch.h"
 #include "synch.h"
 #include "cond.h"
-
-/*
- * Test driver for Checkpoint 2.
- * These tests simulate events by calling event handler functions directly
- * (instead of waiting for real keyboard input).
- */
 
 void printModelState(const char *label, const Model *model);
 int testModelInit(void);

@@ -30,11 +30,12 @@ score.o: score.c score.h
 
 pipepair.o: pipepair.c pipepair.h
 	cc68x -g -c pipepair.c
+
 synch.o: synch.c synch.h model.h
 	cc68x -g -c synch.c
 
 raster.o: raster.c raster.h
 	cc68x -g -c raster.c
 
-clean:
-	rm -f *.o prog.tos test.tos results.txt
+renderer.o: renderer.c renderer.h model.h
+	cc68x -g -c renderer.c
