@@ -11,9 +11,7 @@
  */
 
 #include "raster.h"
-
-extern void linea0(void);
-extern long V_FNT_AD;
+#include <linea.h>
 
 void clear_screen(UINT32 *base)
 {
