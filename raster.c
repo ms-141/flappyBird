@@ -156,6 +156,113 @@ void plot_vertical_line(UINT32 *base, int row, int col, UINT16 length)
     }
 }
 
+void plot_line(UINT32 *base, int start_row, int start_col, int end_row, int end_col)
+{
+    int delta_col;
+    int delta_row;
+    int step_col;
+    int step_row;
+    int error;
+    int current_col;
+    int current_row;
+    UINT8 *base8;
+
+    base8 = (UINT8 *)base;
+    current_col = start_col;
+    current_row = start_row;
+
+    delta_col = end_col - start_col;
+    if (delta_col < 0)
+        delta_col = -delta_col;
+
+    delta_row = end_row - start_row;
+    if (delta_row < 0)
+        delta_row = -delta_row;
+
+    step_col = (start_col < end_col) ? 1 : -1;
+    step_row = (start_row < end_row) ? 1 : -1;
+
+    error = delta_col - delta_row;
+
+    while (1)
+    {
+        plot_pixel(base8, current_row, current_col);
+
+        if (current_col == end_col && current_row == end_row)
+            break;
+
+        if ((error << 1) > -delta_row)
+        {
+            error -= delta_row;
+            current_col += step_col;
+        }
+
+        if ((error << 1) < delta_col)
+        {
+            error += delta_col;
+            current_row += step_row;
+        }
+    }
+}
+
+void plot_triangle(UINT32 *base, int row, int col, UINT16 triangle_base, UINT16 height, UINT8 direction)
+{
+    int vertex_row_a;
+    int vertex_col_a;
+    int vertex_row_b;
+    int vertex_col_b;
+    int vertex_row_c;
+    int vertex_col_c;
+
+    if (triangle_base == 0 || height == 0)
+        return;
+
+    if (direction == 0)
+    {
+        vertex_row_a = row;
+        vertex_col_a = col;
+        vertex_row_b = row;
+        vertex_col_b = col + triangle_base - 1;
+        vertex_row_c = row + height - 1;
+        vertex_col_c = col;
+    }
+    else if (direction == 1)
+    {
+        vertex_row_a = row;
+        vertex_col_a = col;
+        vertex_row_b = row;
+        vertex_col_b = col - triangle_base + 1;
+        vertex_row_c = row + height - 1;
+        vertex_col_c = col;
+    }
+    else if (direction == 2)
+    {
+        vertex_row_a = row;
+        vertex_col_a = col;
+        vertex_row_b = row;
+        vertex_col_b = col + triangle_base - 1;
+        vertex_row_c = row - height + 1;
+        vertex_col_c = col;
+    }
+    else if (direction == 3)
+    {
+        vertex_row_a = row;
+        vertex_col_a = col;
+        vertex_row_b = row;
+        vertex_col_b = col - triangle_base + 1;
+        vertex_row_c = row - height + 1;
+        vertex_col_c = col;
+    }
+    else
+    {
+        return;
+    }
+
+    plot_line(base, vertex_row_a, vertex_col_a, vertex_row_b, vertex_col_b);
+    plot_line(base, vertex_row_a, vertex_col_a, vertex_row_c, vertex_col_c);
+    plot_line(base, vertex_row_b, vertex_col_b, vertex_row_c, vertex_col_c);
+}
+
 void plot_rectangle(UINT32 *base, int row, int col, UINT16 length, UINT16 width)
 {
     int r;
