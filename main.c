@@ -11,9 +11,8 @@ Authors: Muji Shah, Gurshan Chera, Declan McCarthy
 Program Details: flappy bird game!
 */
 
-/* Raster test functions: (others are inside test.c)*/
+/* Raster test functions: (others are inside test.c) */
 
-void testModelInit(void);
 void testClearScreen(void);
 void testPlotPixel(void);
 void testPlotHorizontalLine(void);
@@ -24,8 +23,6 @@ int main()
 
     /* Test function calls: */
     /*
-    testModelInit();
-
     testClearScreen();
 
     testClearRegion();
