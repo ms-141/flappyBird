@@ -39,9 +39,9 @@ int main()
     testClearRegion();
 
     testPlotPixel();
-
+    
     testPlotHorizontalLine();
-
+    
     testPlotVerticalLine();
     
     testPlotLine();
@@ -92,14 +92,14 @@ void testPlotPixel()
 void testPlotHorizontalLine()
 {
     UINT32 *base = (UINT32 *)Physbase();
-    plot_horizontal_line(base, 50, 0, 640);
+    plot_horizontal_line(base, 200, 0, 640);
     printf("TEST plot_horizontal_line: CHECK OUTPUT \n");
 }
 
 void testPlotVerticalLine()
 {
     UINT32 *base = (UINT32 *)Physbase();
-    plot_vertical_line(base, 0, 350, 400);
+    plot_vertical_line(base, 0, 200, 400);
     printf("TEST plot_vertical_line: CHECK OUTPUT \n");
 }
 
