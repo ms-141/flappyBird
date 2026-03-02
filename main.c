@@ -13,18 +13,26 @@ Program Details: flappy bird game!
 
 /* Raster test functions: (others are inside test.c) */
 
+
 void testClearScreen(void);
 void testPlotPixel(void);
 void testPlotHorizontalLine(void);
 void testPlotVerticalLine(void);
+void testPlotLine(void);
+void testPlotRectangle(void);
+void testPlotSquare(void);
+void testPlotTriangle(void);
 void testPlot8bitBitmap(void);
 void testPlot16bitBitmap(void);
 void testPlot32bitBitmap(void);
+void testPlotCharacter(void);
+void testPlotString(void);
+
 
 int main()
 {
 
-    /* Test function calls: */
+    /* Raster test function calls: */
     /*
     testClearScreen();
 
@@ -35,12 +43,24 @@ int main()
     testPlotHorizontalLine();
 
     testPlotVerticalLine();
+    
+    testPlotLine();
+    
+    testPlotRectangle();
 
+    testPlotSquare();
+    
+    testPlotTriangle();
+    
     testPlot8bitBitmap();
 
     testPlot16bitBitmap();
 
     testPlot32bitBitmap();
+
+    testPlotCharacter();
+
+    testPlotString();
     */
 
     /* Main game loop: */
@@ -83,6 +103,34 @@ void testPlotVerticalLine()
     printf("TEST plot_vertical_line: CHECK OUTPUT \n");
 }
 
+void testPlotLine()
+{
+    UINT32 *base = (UINT32 *)Physbase();
+    plot_line(base, 0, 0, 400, 640);
+    printf("TEST plot_line: CHECK OUTPUT \n");
+}
+
+void testPlotRectangle()
+{
+    UINT32 *base = (UINT32 *)Physbase();
+    plot_rectangle(base, 250, 350, 150, 50);
+    printf("TEST plot_rectangle: CHECK OUTPUT \n");
+}
+
+void testPlotSquare()
+{
+    UINT32 *base = (UINT32 *)Physbase();
+    plot_square(base, 100, 200, 25);
+    printf("TEST plot_square: CHECK OUTPUT \n");
+}
+
+void testPlotTriangle()
+{
+    UINT32 *base = (UINT32 *)Physbase();
+    plot_triangle(base, -5, -5, 50, 50, 0);
+    printf("TEST plot_triangle: CHECK OUTPUT \n");
+}
+
 UINT8 bitmap_8bit[8] = {
     0xFF, 0xFF, 0xFF, 0xFF,
     0xFF, 0xFF, 0xFF, 0xFF};
@@ -122,18 +170,4 @@ void testPlot32bitBitmap()
     UINT32 *base = (UINT32 *)Physbase();
     plot_32bit_bitmap(base, 100, 300, bitmap_32bit, 32);
     printf("TEST plot_32bit_bitmap: CHECK OUTPUT \n");
-}
-
-void testPlotRectangle()
-{
-    UINT32 *base = (UINT32 *)Physbase();
-    plot_rectangle(base, 250, 350, 150, 50);
-    printf("TEST plot_rectangle: CHECK OUTPUT \n");
-}
-
-void testPlotSquare()
-{
-    UINT32 *base = (UINT32 *)Physbase();
-    plot_square(base, 100, 200, 25);
-    printf("TEST plot_square: CHECK OUTPUT \n");
 }
