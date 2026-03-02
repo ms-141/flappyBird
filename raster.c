@@ -163,6 +163,7 @@ void plot_line(UINT32 *base, int start_row, int start_col, int end_row, int end_
     int step_col;
     int step_row;
     int error;
+    int e2;
     int current_col;
     int current_row;
     UINT8 *base8;
@@ -191,13 +192,15 @@ void plot_line(UINT32 *base, int start_row, int start_col, int end_row, int end_
         if (current_col == end_col && current_row == end_row)
             break;
 
-        if ((error << 1) > -delta_row)
+        e2 = 2 * error;
+
+        if (e2 > -delta_row)
         {
             error -= delta_row;
             current_col += step_col;
         }
 
-        if ((error << 1) < delta_col)
+        if (e2 < delta_col)
         {
             error += delta_col;
             current_row += step_row;
