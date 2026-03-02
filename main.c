@@ -17,6 +17,7 @@ void testModelInit(void);
 void testClearScreen(void);
 void testPlotPixel(void);
 void testPlotHorizontalLine(void);
+void testPlotVerticalLine();
 
 int main()
 {
