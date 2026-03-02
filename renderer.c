@@ -8,11 +8,6 @@
  * This file implements the functions for the Renderer routines.
  *
  * File Status:
- * There is no bird_bitmap currently defined.
- *
- * render_pipe will not work until the plot_rectangle is implemented
- *
- * render_score will not work until the plot_string is implemented
  */
 
 #include "renderer.h"
