@@ -122,7 +122,30 @@ void plot_horizontal_line(UINT32 *base, int row, int col, UINT16 length)
 }
 
 void plot_vertical_line(UINT32 *base, int row, int col, UINT16 length) {
-    
+	int temp;
+	UINT32 pattern;
+	UINT32 *screen_long;
+	int end = (row + length) - 1;
+	
+	/* line on the screen */
+	if (col >= 0 && col < SCREEN_WIDTH)
+	{
+        /* top is clipped */
+		if (row < 0) {
+			row = 0;
+		}
+        /* bottom is clipped */
+		if (end > 399) {
+			end = SCREEN_HEIGHT - 1;
+		}
+		pattern = 1 << (31 - (col & 31));
+		screen_long = base + row * 20 + (col >> 5);
+		for ( ; row <= end; row++)
+		{
+			*screen_long |= pattern;
+			screen_long = screen_long + 20;
+		}
+	}
 }
 
 void plot_8bit_bitmap(UINT8 *base, int row, int col, const UINT8 *bitmap, UINT16 height)
