@@ -148,6 +148,29 @@ void plot_vertical_line(UINT32 *base, int row, int col, UINT16 length) {
 	}
 }
 
+void plot_rectangle(UINT32 *base, int row, int col, UINT16 length, UINT16 width)
+{
+    int r;
+    int c;
+    UINT8 *base8 = (UINT8 *)base;
+
+    if (length == 0 || width == 0)
+        return;
+
+    for (r = 0; r < length; r++)
+    {
+        for (c = 0; c < width; c++)
+        {
+            plot_pixel(base8, row + r, col + c);
+        }
+    }
+}
+
+void plot_square(UINT32 *base, int row, int col, UINT16 side)
+{
+    plot_rectangle(base, row, col, side, side);
+}
+
 void plot_8bit_bitmap(UINT8 *base, int row, int col, const UINT8 *bitmap, UINT16 height)
 {
     int r, c; /* r = row, c = column */
