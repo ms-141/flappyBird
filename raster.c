@@ -7,10 +7,13 @@
  * Description:
  * This file implements the functions for the Raster routines.
  *
- * File Status:             
-*/ 
+ * File Status:
+ */
 
 #include "raster.h"
+
+extern void linea0(void);
+extern long V_FNT_AD;
 
 void clear_screen(UINT32 *base)
 {
@@ -37,16 +40,16 @@ void clear_region(UINT32 *base, int row, int col, UINT16 length, UINT16 width)
         return;
 
     /* top is clipped */
-    if (start_row < 0) 
+    if (start_row < 0)
         start_row = 0;
     /* left is clipped */
-    if (start_col < 0) 
+    if (start_col < 0)
         start_col = 0;
     /* bottom is clipped */
-    if (end_row > SCREEN_HEIGHT) 
+    if (end_row > SCREEN_HEIGHT)
         end_row = SCREEN_HEIGHT;
     /* right is clipped */
-    if (end_col > SCREEN_WIDTH)  
+    if (end_col > SCREEN_WIDTH)
         end_col = SCREEN_WIDTH;
 
     for (r = start_row; r < end_row; r++)
@@ -57,95 +60,102 @@ void clear_region(UINT32 *base, int row, int col, UINT16 length, UINT16 width)
         {
             UINT8 *byte = (UINT8 *)base + row_offset + (c >> 3);
 
-            *byte &= ~(1 << (7 - (c & 7)));  /* clear pixel by masking the byte, only pixel bit is cleared */
+            *byte &= ~(1 << (7 - (c & 7))); /* clear pixel by masking the byte, only pixel bit is cleared */
         }
     }
 }
 
-void plot_pixel(UINT8 *base, int row, int col) {
+void plot_pixel(UINT8 *base, int row, int col)
+{
     unsigned int row_offset;
-    if (col >= 0 && col < SCREEN_WIDTH && 
+    if (col >= 0 && col < SCREEN_WIDTH &&
         row >= 0 && row < SCREEN_HEIGHT)
-        {
-        row_offset = (row << 6) + (row << 4);   /* row * 80 */
+    {
+        row_offset = (row << 6) + (row << 4); /* row * 80 */
         *(base + row_offset + (col >> 3)) |= 1 << (7 - (col & 7));
-        }
+    }
 }
 
 void plot_horizontal_line(UINT32 *base, int row, int col, UINT16 length)
 {
     UINT32 SOLID = 0xFFFFFFFF;
-	UINT32 p1, p2;
-	int x, i, end;
-	int shift_F, shift_B;
-	UINT32 mask;
-	UINT32 *place;
-	
-	/* line completely off-screen (return) */
-	if (row < 0 || row >= SCREEN_HEIGHT) {
-		return;
-	}
-	/* left is clipped */
-	if (col < 0) {
-		col = 0;
-	}
-	/* right is clipped */
-	if (col >= SCREEN_WIDTH) {
-		col = SCREEN_WIDTH - 1;
-	}
-	
-	place = base + row * 20;
-	x = col >> 5;		/* divide by 32 */
-	end = ((col + length) - 1) >> 5;
-	shift_F = col & 31;
-	shift_B = (32 - 1) - (((col + length) - 1) & 31);
-	
-	if (x == end)
-	{
-		p1 = SOLID >> shift_F;
-		p2 = SOLID << shift_B;
-		mask = (p1) & (p2);
-		*(place + x) |= mask;
-	}
-	else
-	{
-		p1 = SOLID >> shift_F;
-		p2 = SOLID << shift_B;
-		*(place + x) |= p1;
-		
-		for (i = x + 1; i < end; i++)
-		{
-			*(place + i) = SOLID;
-		}
-		*(place + end) |= p2;
-	}
+    UINT32 p1, p2;
+    int x, i, end;
+    int shift_F, shift_B;
+    UINT32 mask;
+    UINT32 *place;
+
+    /* line completely off-screen (return) */
+    if (row < 0 || row >= SCREEN_HEIGHT)
+    {
+        return;
+    }
+    /* left is clipped */
+    if (col < 0)
+    {
+        col = 0;
+    }
+    /* right is clipped */
+    if (col >= SCREEN_WIDTH)
+    {
+        col = SCREEN_WIDTH - 1;
+    }
+
+    place = base + row * 20;
+    x = col >> 5; /* divide by 32 */
+    end = ((col + length) - 1) >> 5;
+    shift_F = col & 31;
+    shift_B = (32 - 1) - (((col + length) - 1) & 31);
+
+    if (x == end)
+    {
+        p1 = SOLID >> shift_F;
+        p2 = SOLID << shift_B;
+        mask = (p1) & (p2);
+        *(place + x) |= mask;
+    }
+    else
+    {
+        p1 = SOLID >> shift_F;
+        p2 = SOLID << shift_B;
+        *(place + x) |= p1;
+
+        for (i = x + 1; i < end; i++)
+        {
+            *(place + i) = SOLID;
+        }
+        *(place + end) |= p2;
+    }
 }
 
-void plot_vertical_line(UINT32 *base, int row, int col, UINT16 length) {
-	int temp;
-	UINT32 pattern;
-	UINT32 *screen_long;
-	int end = (row + length) - 1;
-	
-	/* line on the screen */
-	if (col >= 0 && col < SCREEN_WIDTH)
-	{
+void plot_vertical_line(UINT32 *base, int row, int col, UINT16 length)
+{
+    int temp;
+    UINT32 pattern;
+    UINT32 *screen_long;
+    int end = (row + length) - 1;
+
+    /* line on the screen */
+    if (col >= 0 && col < SCREEN_WIDTH)
+    {
         /* top is clipped */
-		if (row < 0) {
-			row = 0;
-		}
+        if (row < 0)
+        {
+            row = 0;
+        }
         /* bottom is clipped */
-		if (end > 399) {
-			end = SCREEN_HEIGHT - 1;
-		}
-		pattern = 1 << (31 - (col & 31));
-		screen_long = base + row * 20 + (col >> 5);
-		for ( ; row <= end; row++)
-		{
-			*screen_long |= pattern;
-			screen_long = screen_long + 20;
-		}
-	}
+        if (end > 399)
+        {
+            end = SCREEN_HEIGHT - 1;
+        }
+        pattern = 1 << (31 - (col & 31));
+        screen_long = base + row * 20 + (col >> 5);
+        for (; row <= end; row++)
+        {
+            *screen_long |= pattern;
+            screen_long = screen_long + 20;
+        }
+    }
 }
 
 void plot_rectangle(UINT32 *base, int row, int col, UINT16 length, UINT16 width)
@@ -178,7 +188,7 @@ void plot_8bit_bitmap(UINT8 *base, int row, int col, const UINT8 *bitmap, UINT16
     int start_row = row;
     int start_col = col;
     int end_row = row + height;
-    int end_col = col + 8;   /* fixed width */
+    int end_col = col + 8; /* fixed width */
 
     /* completely off-screen (return) */
     if (end_row <= 0 || end_col <= 0 ||
@@ -224,13 +234,14 @@ void plot_8bit_bitmap(UINT8 *base, int row, int col, const UINT8 *bitmap, UINT16
     }
 }
 
-void plot_16bit_bitmap(UINT16 *base, int row, int col, const UINT16 *bitmap, UINT16 height) {
+void plot_16bit_bitmap(UINT16 *base, int row, int col, const UINT16 *bitmap, UINT16 height)
+{
     int r, c; /* r = row, c = column */
 
     int start_row = row;
     int start_col = col;
     int end_row = row + height;
-    int end_col = col + 16;   /* fixed width for 16-bit bitmap */
+    int end_col = col + 16; /* fixed width for 16-bit bitmap */
 
     UINT8 *base8 = (UINT8 *)base;
 
@@ -277,14 +288,14 @@ void plot_16bit_bitmap(UINT16 *base, int row, int col, const UINT16 *bitmap, UIN
     }
 }
 
-void plot_32bit_bitmap(UINT32 *base, int row, int col, const UINT32 *bitmap, UINT16 height) 
+void plot_32bit_bitmap(UINT32 *base, int row, int col, const UINT32 *bitmap, UINT16 height)
 {
     int r, c;
 
     int start_row = row;
     int start_col = col;
     int end_row = row + height;
-    int end_col = col + 32;   /* fixed width for 32-bit bitmap */
+    int end_col = col + 32; /* fixed width for 32-bit bitmap */
 
     UINT8 *base8 = (UINT8 *)base;
 
@@ -328,5 +339,35 @@ void plot_32bit_bitmap(UINT32 *base, int row, int col, const UINT32 *bitmap, UIN
                 *byte |= 1 << (7 - (c & 7));
             }
         }
+    }
+}
+
+void plot_character(UINT8 *base, int row, int col, char ch)
+{
+    UINT8 glyph[16];
+    UINT8 *font_table;
+    unsigned int i;
+
+    linea0();
+    font_table = (UINT8 *)V_FNT_AD;
+
+    for (i = 0; i < 16; i++)
+    {
+        glyph[i] = *(font_table + (unsigned char)ch + (i << 8));
+    }
+
+    plot_8bit_bitmap(base, row, col, glyph, 16);
+}
+
+void plot_string(UINT8 *base, int row, int col, char *ch)
+{
+    unsigned int i;
+
+    if (ch == 0)
+        return;
+
+    for (i = 0; ch[i] != '\0'; i++)
+    {
+        plot_character(base, row, col + (i * 8), ch[i]);
     }
 }
