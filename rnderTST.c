@@ -1,5 +1,5 @@
 /*
- * File: rndertst.c
+ * File: rnderTST.c
  *
  * Team Members: Muji Shah, Gurshan Chera, Declan McCarthy
  * Date Created: February 28, 2026
