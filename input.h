@@ -10,3 +10,13 @@
  * File Status:
  *
 */
+#ifndef INPUT_H
+#define INPUT_H
+#include "bird.h"
+
+void inputJump(Bird *bird); /* called when the user presses the jump key to make the bird jump */
+
+
+
+
+#endif

@@ -10,3 +10,16 @@
  * File Status:
  *
 */
+
+#include "input.h"
+
+void inputJump(Bird *bird) {
+    char jumpKey = ' '; 
+    char key = Cconin(); /* get the key that the user pressed */
+    if (key == jumpKey) {   /* if the key is the spacebar, make the bird jump */
+         birdJump(bird);
+    }
+
+
+
+}
