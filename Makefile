@@ -7,6 +7,9 @@ test.tos: test.o asynch.o bird.o cond.o model.o score.o pipepair.o synch.o
 rndertst.tos: rndertst.o bird.o model.o score.o pipepair.o synch.o raster.o renderer.o
 	cc68x -g rndertst.o bird.o model.o score.o pipepair.o synch.o raster.o renderer.o -o rndertst.tos
 
+rstertst.tos: rstertst.o raster.o
+	cc68x -g rstertst.o raster.o -o rstertst.tos
+
 results.txt: test.tos
 	test.tos > results.txt
 
@@ -18,6 +21,9 @@ test.o: test.c model.h asynch.h synch.h cond.h
 
 rndertst.o: rndertst.c model.h synch.h raster.h renderer.h
 	cc68x -g -c rndertst.c
+
+rstertst.o: rstertst.c raster.h
+	cc68x -g -c rstertst.c
 
 asynch.o: asynch.c asynch.h model.h
 	cc68x -g -c asynch.c
