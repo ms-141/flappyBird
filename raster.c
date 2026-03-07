@@ -76,13 +76,15 @@ void plot_pixel(UINT8 *base, int row, int col)
 
 void plot_horizontal_line(UINT32 *base, int row, int col, UINT16 length)
 {
-    UINT32 SOLID = 0xFFFFFFFF;
     UINT32 p1, p2;
-    UINT16 total_length;
     int x, i, end;
     int shift_F, shift_B;
     UINT32 mask;
     UINT32 *place;
+	UINT32 SOLID = 0xFFFFFFFF;
+	int total_length = col + length;
+	
+	end = (total_length - 1) >> 5; /* where the line ends on the screen */
 
     /* line completely off-screen (return) */
     if (row < 0 || row >= SCREEN_HEIGHT)
@@ -90,19 +92,29 @@ void plot_horizontal_line(UINT32 *base, int row, int col, UINT16 length)
         return;
     }
     /* left is clipped */
-    if (col < 0 || total_length < 0)
+    if (col < 0)
     {
+		total_length = col + length; /* so that the total length is representative of the line being off the screen*/
         col = 0;
     }
     /* right is clipped */
-    if (col >= SCREEN_WIDTH || total_length >= SCREEN_WIDTH)
+    if (col >= SCREEN_WIDTH)
     {
-        col = SCREEN_WIDTH - 1;
+        return;
     }
+	
+	if ((col + length) > SCREEN_WIDTH)
+	{
+		length = SCREEN_WIDTH - col;
+		total_length = col + length;
+	}
 
+	if (length <= 0)
+		return;
+
+	end = (total_length - 1) >> 5;
     place = base + row * 20;
     x = col >> 5; /* divide by 32 */
-    end = (total_length - 1) >> 5; /* where the line ends on the screen */
     shift_F = col & 31;
     shift_B = 31 - ((total_length - 1) & 31);
 
@@ -126,6 +138,7 @@ void plot_horizontal_line(UINT32 *base, int row, int col, UINT16 length)
         *(place + end) |= p2;
     }
 }
+
 
 void plot_vertical_line(UINT32 *base, int row, int col, UINT16 length)
 {
