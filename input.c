@@ -12,14 +12,29 @@
 */
 
 #include "input.h"
+#include "model.h"
 
-void inputJump(Bird *bird) {
-    char jumpKey = ' '; 
-    char key = Cconin(); /* get the key that the user pressed */
-    if (key == jumpKey) {   /* if the key is the spacebar, make the bird jump */
-         birdJump(bird);
+bool processInput(Model *model) {
+    if ((model->state == PLAYING) && (model->bird.jump_ticks_remaining == 3)) {
+        return true;
     }
+    if (model->state == MENU) {
+        return true; /* Placeholder for no input */
+    }
+    if (model->state == GAME_OVER) {
+        return true; /* Placeholder for no input */
+    }
+    return false;
+}
 
-
-
+char nextInput(Model *model) {
+    if ((model->state == PLAYING) && (model->bird.jump_ticks_remaining == 3)) {
+        return ' '; /* Return the jump key */
+    }
+    if (model->state == MENU) {
+        return '\0'; /* Placeholder for no input */
+    }
+    if (model->state == GAME_OVER) {
+        return 'q'; 
+    }
 }

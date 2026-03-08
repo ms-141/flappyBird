@@ -12,9 +12,12 @@
 */
 #ifndef INPUT_H
 #define INPUT_H
-#include "bird.h"
 
-void inputJump(Bird *bird); /* called when the user presses the jump key to make the bird jump */
+#include <stdbool.h>
+#include "model.h"
+
+bool processInput(Model *model); /* Returns whether pending input needs to be processed */
+char nextInput(Model *model); /* Returns the next input to be proccessed */
 
 
 
