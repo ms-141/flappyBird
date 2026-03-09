@@ -24,10 +24,10 @@
 typedef struct
 {
     int x; /* each set of pipes has a continuously changing horizontal pos. */
+    int prev_x; /* the previous horizontal pos. of the pipes used for renderer simplification */
     unsigned int y; /* the vertical pos. of the bottom of the top pipe.
                     the pipe gap size will be added to this value to 
                     determine the vertical pos. of the top of the bottom pipe */
-                
 } SetOfPipes;
 
 /* moves the pipes by PIPE_MOVE_SPEED pixels to the left */

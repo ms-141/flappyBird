@@ -29,6 +29,7 @@ typedef struct
 {
     unsigned int x; /* bird's horizontal pos. is fixed */
     int y; /* the birds vertical pos. changes */
+    int prev_y; /* the bird's previous vertical pos. used for renderer simplification */
     unsigned int jump_ticks_remaining; /* the number of ticks remaining in the current jump */
 } Bird;
 

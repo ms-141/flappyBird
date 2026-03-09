@@ -17,11 +17,13 @@ void handleBirdMovement(Model *model) {
 
     if (model->state != PLAYING)
         return; 
-    if (bird->jump_ticks_remaining > 0) {
+    if (bird->jump_ticks_remaining > 0) 
+    {
         birdJump(bird); 
         bird->jump_ticks_remaining -= 1; /* decrease the number of jump ticks remaining */
     }
-    else {
+    else 
+    {
         birdFalling(bird); /* if the bird is not currently jumping, make it fall */
     }
 }
@@ -31,7 +33,8 @@ void handlePipeMovement(Model *model) {
 
     if (model->state != PLAYING)
         return;
-    for (i = 0; i < 3; i++) {
+    for (i = 0; i < 3; i++) 
+    {
         movePipes(&model->pipes[i]);
     }
 }

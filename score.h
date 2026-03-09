@@ -18,6 +18,7 @@
 typedef struct
 {
 	unsigned int curr_score; /* current score for the current round */
+	unsigned int prev_score; /* the previous score used for renderer simplification */
 	unsigned int high_score; /* highest score out of all of the rounds */
 } Score;
 
