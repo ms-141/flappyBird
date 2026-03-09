@@ -19,7 +19,4 @@
 bool processInput(Model *model); /* Returns whether pending input needs to be processed */
 char nextInput(Model *model); /* Returns the next input to be proccessed */
 
-
-
-
 #endif
