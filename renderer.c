@@ -56,7 +56,7 @@ void render_score(const Score *score, UINT8 *base)
     char score_str[20];
 
     /* erase previous score */
-    clear_region((UINT32 *)base, 20, 20, 16, 100); 
+    clear_region((UINT32 *)base, 20, 20, 16, 75); 
 
     sprintf(score_str, "Score: %u", score->curr_score);
 
