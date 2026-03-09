@@ -38,7 +38,8 @@ void handleBirdCollision(Model *model) {
 
     if (model->state != PLAYING)
         return;
-    for (i = 0; i < 3; i++) {
+    for (i = 0; i < 3; i++) 
+    {
         if (checkBirdCollision(&model->bird, &model->pipes[i], 150)) {
             model->state = GAME_OVER;
         }
@@ -50,7 +51,8 @@ void handlePipeRespawn(Model *model) {
 
     if (model->state != PLAYING)
         return;
-    for (i = 0; i < 3; i++) {
+    for (i = 0; i < 3; i++) 
+    {
         if (isOffScreen(&model->pipes[i], 640)) { 
             resetPipes(&model->pipes[i], 640);
         }
@@ -62,8 +64,10 @@ void handleScoreIncrease(Model *model) {
 
     if (model->state != PLAYING)
         return;
-    for (i = 0; i < 3; i++) {
-        if (model->pipes[i].x + PIPE_WIDTH <= model->bird.x) { /* if the bird has just passed through the pipes */
+    for (i = 0; i < 3; i++) 
+    {
+        if (model->pipes[i].x + PIPE_WIDTH == model->bird.x) /* if the bird has just passed through the pipes */
+        { 
             increaseScore(&model->score);
         }
     }
