@@ -22,6 +22,18 @@ int main()
     modelInit(&model);
     render(&model, base);
 
+    while (!quit) {
+        if (processInput(&model)) {
+            char input = nextInput(&model);
+            if (input == ' ') {
+                birdJump(&model.bird);
+            } 
+            else if (input == 'q') {
+                quit = true;
+            }
+        }
+    }
+
 
     return 0;
 }

@@ -5,7 +5,7 @@
  * Date Created: March 2, 2026
  *
  * Description:
- * This file wraps underlying, O/S-specific code for performing keyboard and mouse input.
+ * This file wraps underlying, O/S-specific code for performing keyboard input.
  *
  * File Status:
  *
@@ -31,10 +31,7 @@ char nextInput(Model *model) {
     if ((model->state == PLAYING) && (model->bird.jump_ticks_remaining == 3)) {
         return ' '; /* Return the jump key */
     }
-    if (model->state == MENU) {
-        return '\0'; /* Placeholder for no input */
-    }
-    if (model->state == GAME_OVER) {
-        return 'q'; 
+    if ((model->state == GAME_OVER) || (model->state == PLAYING)) {
+        return 'q'; /* End game */
     }
 }
