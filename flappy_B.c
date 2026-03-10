@@ -5,8 +5,6 @@ Program Details: flappy bird game!
 File Status:
 The main game loop is implemented, but the functions 
 for processing events are not yet implemented.
-
-The input.h and .c files aren't used yet.
 */
 
 #include <stdio.h>
