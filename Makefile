@@ -1,29 +1,29 @@
-prog.tos: main.o asynch.o bird.o cond.o model.o score.o pipepair.o synch.o raster.o renderer.o
-	cc68x -g main.o asynch.o bird.o cond.o model.o score.o pipepair.o synch.o raster.o renderer.o -o prog.tos 
+prog.tos: flappy_B.o asynch.o bird.o cond.o model.o score.o pipepair.o synch.o raster.o renderer.o input.o
+	cc68x -g flappy_B.o asynch.o bird.o cond.o model.o score.o pipepair.o synch.o raster.o renderer.o input.o -o prog.tos 
 
 test.tos: test.o asynch.o bird.o cond.o model.o score.o pipepair.o synch.o
 	cc68x -g test.o asynch.o bird.o cond.o model.o score.o pipepair.o synch.o -o test.tos
 
-rndertst.tos: rndertst.o bird.o model.o score.o pipepair.o synch.o raster.o renderer.o
-	cc68x -g rndertst.o bird.o model.o score.o pipepair.o synch.o raster.o renderer.o -o rndertst.tos
+rndertst.tos: rnderTST.o bird.o model.o score.o pipepair.o synch.o raster.o renderer.o
+	cc68x -g rnderTST.o bird.o model.o score.o pipepair.o synch.o raster.o renderer.o -o rndertst.tos
 
-rstertst.tos: rstertst.o raster.o
-	cc68x -g rstertst.o raster.o -o rstertst.tos
+rstertst.tos: rsterTST.o raster.o
+	cc68x -g rsterTST.o raster.o -o rstertst.tos
 
 results.txt: test.tos
 	test.tos > results.txt
 
-main.o: main.c model.h asynch.h synch.h cond.h
-	cc68x -g -c main.c
+flappy_B.o: flappy_B.c model.h asynch.h synch.h cond.h input.h
+	cc68x -g -c flappy_B.c
 
 test.o: test.c model.h asynch.h synch.h cond.h
 	cc68x -g -c test.c
 
-rndertst.o: rndertst.c model.h synch.h raster.h renderer.h
-	cc68x -g -c rndertst.c
+rnderTST.o: rnderTST.c model.h synch.h raster.h renderer.h
+	cc68x -g -c rnderTST.c
 
-rstertst.o: rstertst.c raster.h
-	cc68x -g -c rstertst.c
+rsterTST.o: rsterTST.c raster.h
+	cc68x -g -c rsterTST.c
 
 asynch.o: asynch.c asynch.h model.h
 	cc68x -g -c asynch.c
@@ -51,3 +51,6 @@ raster.o: raster.c raster.h
 
 renderer.o: renderer.c renderer.h model.h
 	cc68x -g -c renderer.c
+
+input.o: input.c input.h
+	cc68x -g -c input.c
