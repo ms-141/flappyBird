@@ -15,9 +15,12 @@ Program Details: flappy bird game!
 int main()
 {
     /* Main game loop: */
-    
+    Model model;
+    UINT8 *base = Physbase();
+    bool quit = false;
 
-
+    modelInit(&model);
+    render(&model, base);
 
 
     return 0;
