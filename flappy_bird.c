@@ -5,6 +5,7 @@
 #include "synch.h"
 #include "cond.h"
 #include "raster.h"
+#include "input.h"
 
 /*
 Authors: Muji Shah, Gurshan Chera, Declan McCarthy
@@ -14,6 +15,10 @@ Program Details: flappy bird game!
 int main()
 {
     /* Main game loop: */
+    
+
+
+
 
     return 0;
 }
