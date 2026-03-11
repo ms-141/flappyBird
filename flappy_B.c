@@ -36,9 +36,9 @@ int main()
 
     while (!quit)
     {
-        if (Cconis())
+        if (processInput())
         {
-            char key = (char)Cnecin();
+            char key = nextInput();
             /* processAsyncEvents(&model, key) */
         }
 
