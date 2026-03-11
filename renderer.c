@@ -39,10 +39,10 @@ void render_pipe(const SetOfPipes *pipes, UINT8 *base)
     unsigned int bottom_pipe_height = SCREEN_HEIGHT - bottom_pipe_y;
 
     /* erase top pipe */
-    clear_region((UINT32 *)base, 0, pipes->prev_x, pipes->y, PIPE_WIDTH);
+    clear_region((UINT32 *)base, 0, pipes->prev_x + PIPE_WIDTH - PIPE_MOVE_SPEED, pipes->y, PIPE_MOVE_SPEED);
 
     /* erase bottom pipe */
-    clear_region((UINT32 *)base, bottom_pipe_y, pipes->prev_x, bottom_pipe_height, PIPE_WIDTH);
+    clear_region((UINT32 *)base, bottom_pipe_y, pipes->prev_x + PIPE_WIDTH - PIPE_MOVE_SPEED, bottom_pipe_height, PIPE_MOVE_SPEED);
 
     /* top pipe */
     plot_rectangle((UINT32 *)base, 0, pipes->x, pipes->y, PIPE_WIDTH);
