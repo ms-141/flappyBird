@@ -11,8 +11,6 @@
  *
 */
 
-#include <osbind.h>
-#include <stdbool.h>
 #include "input.h"
 
 /* bool processInput(Model *model) {
@@ -37,14 +35,13 @@ char nextInput(Model *model) {
     /*}
 } */
 
-bool processInput() {
+int processInput() {
     if (Cconis()) {
-        return true;
+        return 1;
     }
-    return false;
+    return 0;
 }
 
 char nextInput() {
-    char input = (char)Cnecin();
-    return input;
+    return (char)Cnecin();
 }

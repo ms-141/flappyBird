@@ -8,9 +8,9 @@ for processing events are not yet implemented.
 */
 
 #include <stdio.h>
-#include <stdbool.h>
 #include "model.h"
 #include "renderer.h"
+#include "raster.h"
 #include "asynch.h"
 #include "synch.h"
 #include "cond.h"
@@ -26,19 +26,20 @@ int main()
     Model model;
     UINT8 *base = (UINT8 *)Physbase();
 
-    UINT32 timeThen, timeNow, timeElapsed;
+    UINT32 timeThen, timeNow, timeElapsed; /* long? */
 
-    bool quit = false;
+    unsigned int quit = 0;
 
     /* initializing and rendering first state */
     modelInit(&model);
+    clear_screen((UINT32 *)base);
     render(&model, base);
 
     timeThen = get_time();
 
     while (!quit)
     {
-        if (processInput())
+        if (processInput() == 1)
         {
             char input = nextInput();
 
@@ -48,7 +49,7 @@ int main()
             }
             else if (input == 'q' && model.state == MENU)
             {
-                quit = true;
+                quit = 1;
             }
             else if (input == ' ' && model.state == PLAYING)
             {

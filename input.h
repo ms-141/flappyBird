@@ -13,10 +13,9 @@
 #ifndef INPUT_H
 #define INPUT_H
 
-#include <stdbool.h>
-#include "model.h"
+#include <osbind.h>
 
-bool processInput(); /* Returns whether pending input needs to be processed */
+int processInput(); /* Returns whether pending input needs to be processed */
 char nextInput(); /* Returns the next input to be proccessed */
 
 #endif
