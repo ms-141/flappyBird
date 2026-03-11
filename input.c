@@ -11,8 +11,9 @@
  *
 */
 
+#include <osbind.h>
+#include <stdbool.h>
 #include "input.h"
-#include "model.h"
 
 /* bool processInput(Model *model) {
     if ((model->state == PLAYING) && (model->bird.jump_ticks_remaining == 3)) {
@@ -45,4 +46,5 @@ bool processInput() {
 
 char nextInput() {
     char input = (char)Cnecin();
+    return input;
 }

@@ -8,10 +8,9 @@ for processing events are not yet implemented.
 */
 
 #include <stdio.h>
-#include <osbind.h>
+#include <stdbool.h>
 #include "model.h"
 #include "renderer.h"
-#include "raster.h"
 #include "asynch.h"
 #include "synch.h"
 #include "cond.h"
@@ -26,7 +25,7 @@ int main()
     /* Main game loop: */
     Model model;
     UINT8 *base = (UINT8 *)Physbase();
-    bool quit = 0; /* 0 = false, 1 = true*/
+    bool quit = false;
 
     /* initializing and rendering first state */
     modelInit(&model);
@@ -38,7 +37,7 @@ int main()
     {
         if (processInput())
         {
-            char key = nextInput();
+            char input = nextInput();
             /* processAsyncEvents(&model, key) */
         }
 
