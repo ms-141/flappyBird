@@ -25,6 +25,9 @@ int main()
     /* Main game loop: */
     Model model;
     UINT8 *base = (UINT8 *)Physbase();
+
+    UINT32 timeThen, timeNow, timeElapsed;
+
     bool quit = false;
 
     /* initializing and rendering first state */
@@ -38,7 +41,32 @@ int main()
         if (processInput())
         {
             char input = nextInput();
-            /* processAsyncEvents(&model, key) */
+
+            if (input == 'q' && model.state != MENU)
+            {
+                handleQuitToMenu(&model);
+            }
+            else if (input == 'q' && model.state == MENU)
+            {
+                quit = true;
+            }
+            else if (input == ' ' && model.state == PLAYING)
+            {
+                handleJump(&model);
+            }
+            else if (input == ' ' && model.state == GAME_OVER)
+            {
+                handleRetry(&model);
+            }
+            else if (input == '1' && model.state == MENU)
+            {
+                handle1p(&model);
+            }
+            else if (input == '2' && model.state == MENU)
+            {
+                handle2p(&model);
+            }
+            /* else the input is not accepted (ignored) */
         }
 
         timeNow = get_time();
@@ -46,9 +74,14 @@ int main()
 
         if (timeElapsed > 0)
         {
-            /* processSyncEvents(&model) */
+            /* synchronous events */
+            handleBirdMovement(&model);
+            handlePipeMovement(&model);
 
-            /* processCondEvents(&model) */
+            /* conditional events */
+            handleBirdCollision(&model);
+            handlePipeRespawn(&model);
+            handleScoreIncrease(&model);
 
             render(&model, base);
 
