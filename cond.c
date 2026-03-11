@@ -8,17 +8,15 @@
  * This file implements the functions for handling conditional events.
  *
  * File Status: 
- * The handleBirdCollisions functions currently passes a 
- * static 150 for the ground height.
- * 
- * Currently the checkBirdCollision is passed a static 150 for the ground height
- * by the handleBirdCollisions function.
+ * handleScoreIncrease uses '==' which may or may not
+ * work correctly. If the pipes every move more than 1 pixel
+ * at a time, then it will need to be changed.
 */
 
 #include "cond.h"
 
-int checkBirdCollision(Bird *bird, SetOfPipes *pipes, unsigned int ground_height) {
-    if (bird->y + BIRD_HEIGHT >= ground_height) 
+int checkBirdCollision(Bird *bird, SetOfPipes *pipes) {
+    if (bird->y + BIRD_HEIGHT >= GROUND_HEIGHT) 
         return 1; /* collision with the ground */
 
     if (bird->y <= 0) 
@@ -40,7 +38,7 @@ void handleBirdCollision(Model *model) {
         return;
     for (i = 0; i < 3; i++) 
     {
-        if (checkBirdCollision(&model->bird, &model->pipes[i], 150)) {
+        if (checkBirdCollision(&model->bird, &model->pipes[i])) {
             model->state = GAME_OVER;
         }
     }

@@ -9,8 +9,6 @@
  * as checking for collisions and increasing the score.
  *
  * File Status: 
- * The handleBirdCollisions function checks for all possible 
- * collisions with the bird, including the pipes, the ground, and the top of the screen.
 */
 
 #ifndef COND_H
@@ -20,9 +18,11 @@
 #include "pipepair.h"
 #include "score.h"
 
+#define GROUND_HEIGHT 150
+
 /* checks if the bird has collided with the pipes, the ground, or the top of the screen (y = 0) 
 1 = collided, 0 = hasn't collided */
-int checkBirdCollision(Bird *bird, SetOfPipes *pipes, unsigned int ground_height);
+int checkBirdCollision(Bird *bird, SetOfPipes *pipes);
 /* checks if the bird has collided with a pipe, the ground, or the top of the screen */
 void handleBirdCollision(Model *model);
 /* checks if the bird has passed through a set of pipes and increases score if so */
