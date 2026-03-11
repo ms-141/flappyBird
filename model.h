@@ -11,9 +11,6 @@
  * The Model contains the Bird, the Pipes, and the Score.
  *
  * File Status: 
- * The GameState is only used in the handleBirdCollision 
- * function inside cond.c, but it should be used in other functions 
- * in the future.
  */
 
 #ifndef MODEL_H
@@ -38,5 +35,6 @@ typedef struct
 } Model;
 
 void modelInit(Model *model);
+void modelReset(Model *model);
 
 #endif

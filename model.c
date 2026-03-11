@@ -14,6 +14,13 @@
 
 void modelInit(Model *model)
 {
+    model->score.high_score = 0;
+
+    modelReset(model);
+}
+
+void modelReset(Model *model)
+{
     unsigned int i;
     unsigned int variable_distance = 0; /* the distance between each set of pipes */
 
@@ -24,6 +31,6 @@ void modelInit(Model *model)
         variable_distance += 150; /* increase the distance for the next set of pipes */
     }
     model->score.curr_score = 0;
-    model->score.high_score = 0;
+
     model->state = PLAYING;
 }
