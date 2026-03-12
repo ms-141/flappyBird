@@ -262,7 +262,7 @@ int testCondGroundCollision(void)
 
     modelInit(&model);
     model.state = PLAYING;
-    model.bird.y = 150 - BIRD_HEIGHT;
+    model.bird.y = GROUND_HEIGHT - BIRD_HEIGHT;
 
     printModelState("[testCondGroundCollision] before", &model);
     handleBirdCollision(&model);

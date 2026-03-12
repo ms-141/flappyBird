@@ -18,7 +18,7 @@
 #include "pipepair.h"
 #include "score.h"
 
-#define GROUND_HEIGHT 150
+#define GROUND_HEIGHT 300
 
 /* checks if the bird has collided with the pipes, the ground, or the top of the screen (y = 0) 
 1 = collided, 0 = hasn't collided */

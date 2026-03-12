@@ -63,6 +63,7 @@ void render_score(const Score *score, UINT8 *base)
     plot_string(base, 20, 20, score_str);
 }
 
+/* function that gets repeated on the game loop*/
 void render(const Model *model, UINT8 *base)
 {
     unsigned int i;
