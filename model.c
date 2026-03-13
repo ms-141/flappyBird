@@ -31,6 +31,7 @@ void modelReset(Model *model)
         variable_distance += 150; /* increase the distance for the next set of pipes */
     }
     model->score.curr_score = 0;
+    model->score.prev_score = (unsigned int)-1; /* force score draw after reset */
 
     model->state = PLAYING;
 }

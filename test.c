@@ -95,11 +95,11 @@ int testModelInit(void)
     if (myModel.bird.jump_ticks_remaining != 0)
         passed = 0;
 
-    if (myModel.pipes[0].x != 300 || myModel.pipes[0].y != 200)
+    if (myModel.pipes[0].x != 300 || myModel.pipes[0].y < PIPE_MIN_Y || myModel.pipes[0].y > PIPE_MAX_Y)
         passed = 0;
-    if (myModel.pipes[1].x != 450 || myModel.pipes[1].y != 200)
+    if (myModel.pipes[1].x != 450 || myModel.pipes[1].y < PIPE_MIN_Y || myModel.pipes[1].y > PIPE_MAX_Y)
         passed = 0;
-    if (myModel.pipes[2].x != 600 || myModel.pipes[2].y != 200)
+    if (myModel.pipes[2].x != 600 || myModel.pipes[2].y < PIPE_MIN_Y || myModel.pipes[2].y > PIPE_MAX_Y)
         passed = 0;
 
     if (myModel.score.curr_score != 0)
@@ -201,11 +201,11 @@ int testSynchPipeMovement(void)
     handlePipeMovement(&model);
     printModelState("[testSynchPipeMovement] after", &model);
 
-    if (model.pipes[0].x != 297)
+    if (model.pipes[0].x != (300 - PIPE_MOVE_SPEED))
         passed = 0;
-    if (model.pipes[1].x != 447)
+    if (model.pipes[1].x != (450 - PIPE_MOVE_SPEED))
         passed = 0;
-    if (model.pipes[2].x != 597)
+    if (model.pipes[2].x != (600 - PIPE_MOVE_SPEED))
         passed = 0;
 
     printf("TEST handlePipeMovement: %s\n", passed ? "PASS" : "FAIL");
@@ -226,7 +226,7 @@ int testSynchPipeRespawn(void)
     handlePipeRespawn(&model);
     printModelState("[testSynchPipeRespawn] after", &model);
 
-    if (model.pipes[0].x != 640 || model.pipes[0].y != 200)
+    if (model.pipes[0].x != 640 || model.pipes[0].y < PIPE_MIN_Y || model.pipes[0].y > PIPE_MAX_Y)
         passed = 0;
 
     printf("TEST handlePipeRespawn: %s\n", passed ? "PASS" : "FAIL");

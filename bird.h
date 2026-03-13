@@ -21,7 +21,7 @@
 #define BIRD_VERT_START_POS 200
 #define BIRD_X_POS 50
 #define BIRD_JUMP_DELTA -15 /* bird will move up by this many pixels upon user input for 3 ticks (45 tot) */
-#define BIRD_FALL_DELTA 1 /* bird will move down by this many pixels after each clock tick when not jumping */
+#define BIRD_FALL_DELTA 5 /* bird will move down by this many pixels after each clock tick when not jumping */
 #define BIRD_WIDTH 16
 #define BIRD_HEIGHT 16
 

@@ -17,10 +17,10 @@
 #include "model.h"
 #include "raster.h"
 
-void render(const Model *model, UINT8 *base);
+void render(Model *model, UINT8 *base);
 
 void render_bird(const Bird *bird, UINT8 *base);
-void render_pipes(const SetOfPipes *pipes, UINT8 *base);
-void render_score(const Score *score, UINT8 *base);
+void render_pipe(const SetOfPipes *pipes, UINT8 *base);
+void render_score(Score *score, UINT8 *base);
 
 #endif

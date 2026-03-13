@@ -3,11 +3,12 @@ Authors: Muji Shah, Gurshan Chera, Declan McCarthy
 Program Details: flappy bird game!
 
 File Status:
-The main game loop is implemented, but the functions 
+The main game loop is implemented, but the functions
 for processing events are not yet implemented.
 */
 
 #include <stdio.h>
+#include <stdlib.h>
 #include "model.h"
 #include "renderer.h"
 #include "raster.h"
@@ -29,6 +30,8 @@ int main()
     UINT32 timeThen, timeNow, timeElapsed; /* long? */
 
     unsigned int quit = 0;
+
+    srand((unsigned int)get_time());
 
     /* initializing and rendering first state */
     modelInit(&model);
@@ -100,8 +103,8 @@ UINT32 get_time()
     long old_ssp;
 
     old_ssp = Super(0); /* enter privileged mode */
-    time = *timer; /* read timer */
-    Super(old_ssp); /* exit privileged mode */
+    time = *timer;      /* read timer */
+    Super(old_ssp);     /* exit privileged mode */
 
     return time;
 }

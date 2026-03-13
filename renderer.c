@@ -11,9 +11,9 @@
  * There is 1 obvious possible optimization:
  * Only draw and clear a line of pixels for the top and bottom pipes,
  * instead of clearing and redrawing the entire rectangle.
- * 
+ *
  * Even though the score gets cleared and drawn every tick, this
- * is fine because the clearing ensures that the pipes don't 
+ * is fine because the clearing ensures that the pipes don't
  * cover the score and make it impossible to see.
  */
 
@@ -35,36 +35,43 @@ void render_bird(const Bird *bird, UINT8 *base)
 
 void render_pipe(const SetOfPipes *pipes, UINT8 *base)
 {
+    int dx = pipes->prev_x - pipes->x;
     unsigned int bottom_pipe_y = pipes->y + PIPE_GAP_SIZE;
     unsigned int bottom_pipe_height = SCREEN_HEIGHT - bottom_pipe_y;
 
-    /* erase top pipe */
-    clear_region((UINT32 *)base, 0, pipes->prev_x + PIPE_WIDTH - PIPE_MOVE_SPEED, pipes->y, PIPE_MOVE_SPEED);
+    if (dx > 0 && dx < PIPE_WIDTH)
+    {
+        /* Erase the exposed right strip and draw only the new left strip. */
+        clear_region((UINT32 *)base, 0, pipes->x + PIPE_WIDTH, pipes->y, dx);
+        clear_region((UINT32 *)base, bottom_pipe_y, pipes->x + PIPE_WIDTH, bottom_pipe_height, dx);
 
-    /* erase bottom pipe */
-    clear_region((UINT32 *)base, bottom_pipe_y, pipes->prev_x + PIPE_WIDTH - PIPE_MOVE_SPEED, bottom_pipe_height, PIPE_MOVE_SPEED);
-
-    /* top pipe */
-    plot_rectangle((UINT32 *)base, 0, pipes->x, pipes->y, PIPE_WIDTH);
-
-    /* bottom pipe */
-    plot_rectangle((UINT32 *)base, bottom_pipe_y, pipes->x, bottom_pipe_height, PIPE_WIDTH);
+        plot_rectangle((UINT32 *)base, 0, pipes->x, pipes->y, dx);
+        plot_rectangle((UINT32 *)base, bottom_pipe_y, pipes->x, bottom_pipe_height, dx);
+    }
+    else
+    {
+        /* Fallback for initialization/teleport-like moves (e.g. respawn). */
+        plot_rectangle((UINT32 *)base, 0, pipes->x, pipes->y, PIPE_WIDTH);
+        plot_rectangle((UINT32 *)base, bottom_pipe_y, pipes->x, bottom_pipe_height, PIPE_WIDTH);
+    }
 }
 
-void render_score(const Score *score, UINT8 *base)
+void render_score(Score *score, UINT8 *base)
 {
     char score_str[20];
 
     /* erase previous score */
-    clear_region((UINT32 *)base, 20, 20, 16, 75); 
+    clear_region((UINT32 *)base, 20, 20, 16, 75);
 
     sprintf(score_str, "Score: %u", score->curr_score);
 
     plot_string(base, 20, 20, score_str);
+
+    score->prev_score = score->curr_score;
 }
 
 /* function that gets repeated on the game loop*/
-void render(const Model *model, UINT8 *base)
+void render(Model *model, UINT8 *base)
 {
     unsigned int i;
 
@@ -75,5 +82,8 @@ void render(const Model *model, UINT8 *base)
         render_pipe(&model->pipes[i], base);
     }
 
-    render_score(&model->score, base);
+    if (model->score.curr_score != model->score.prev_score)
+    {
+        render_score(&model->score, base);
+    }
 }

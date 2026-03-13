@@ -7,23 +7,26 @@
  * Description:
  * This file implements the functions for handling conditional events.
  *
- * File Status: 
- * handleScoreIncrease uses '==' which may or may not
- * work correctly. If the pipes every move more than 1 pixel
- * at a time, then it will need to be changed.
-*/
+ * File Status:
+ */
 
 #include "cond.h"
 
-int checkBirdCollision(Bird *bird, SetOfPipes *pipes) {
-    if (bird->y + BIRD_HEIGHT >= GROUND_HEIGHT) 
+int checkBirdCollision(Bird *bird, SetOfPipes *pipes)
+{
+    int bird_top = bird->y + BIRD_COLLISION_MARGIN;
+    int bird_bottom = bird->y + BIRD_HEIGHT - BIRD_COLLISION_MARGIN;
+
+    if (bird->y + BIRD_HEIGHT >= GROUND_HEIGHT)
         return 1; /* collision with the ground */
 
-    if (bird->y <= 0) 
+    if (bird->y <= 0)
         return 1; /* collision with the top of the screen */
-    
-    if (bird->x + BIRD_WIDTH >= pipes->x && bird->x <= pipes->x + PIPE_WIDTH) {
-        if (bird->y <= pipes->y || bird->y + BIRD_HEIGHT >= pipes->y + PIPE_GAP_SIZE) {
+
+    if (bird->x + BIRD_WIDTH >= pipes->x && bird->x <= pipes->x + PIPE_WIDTH)
+    {
+        if (bird_top < (int)pipes->y || bird_bottom > (int)(pipes->y + PIPE_GAP_SIZE))
+        {
             return 1; /* collision with the pipes */
         }
     }
@@ -31,41 +34,50 @@ int checkBirdCollision(Bird *bird, SetOfPipes *pipes) {
     return 0; /* no collision */
 }
 
-void handleBirdCollision(Model *model) {
+void handleBirdCollision(Model *model)
+{
     unsigned int i;
 
     if (model->state != PLAYING)
         return;
-    for (i = 0; i < 3; i++) 
+    for (i = 0; i < 3; i++)
     {
-        if (checkBirdCollision(&model->bird, &model->pipes[i])) {
+        if (checkBirdCollision(&model->bird, &model->pipes[i]))
+        {
             model->state = GAME_OVER;
         }
     }
 }
 
-void handlePipeRespawn(Model *model) {
+void handlePipeRespawn(Model *model)
+{
     unsigned int i;
 
     if (model->state != PLAYING)
         return;
-    for (i = 0; i < 3; i++) 
+    for (i = 0; i < 3; i++)
     {
-        if (isOffScreen(&model->pipes[i], 640)) { 
+        if (isOffScreen(&model->pipes[i], 640))
+        {
             resetPipes(&model->pipes[i], 640);
         }
     }
 }
 
-void handleScoreIncrease(Model *model) {
+void handleScoreIncrease(Model *model)
+{
     unsigned int i;
 
     if (model->state != PLAYING)
         return;
-    for (i = 0; i < 3; i++) 
+    for (i = 0; i < 3; i++)
     {
-        if (model->pipes[i].x + PIPE_WIDTH == model->bird.x) /* if the bird has just passed through the pipes */
-        { 
+        int pipe_right_prev = model->pipes[i].prev_x + PIPE_WIDTH;
+        int pipe_right_now = model->pipes[i].x + PIPE_WIDTH;
+
+        /* score once when the pipe's right edge crosses the bird's x-position */
+        if (pipe_right_prev > (int)model->bird.x && pipe_right_now <= (int)model->bird.x)
+        {
             increaseScore(&model->score);
         }
     }
