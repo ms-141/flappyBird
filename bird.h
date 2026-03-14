@@ -10,8 +10,6 @@
  * that changes based on user input and constant falling.
  *
  * File Status: 
- * The jump_ticks_remaining is set to 3 when the user jumps, which allows the 
- * bird to move up 15 pixels, 3 times, over 3 ticks, for a total of 45 pixels by the synchronous file.
  *
 */
 
