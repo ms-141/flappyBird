@@ -19,6 +19,9 @@
 #include "pipepair.h"
 #include "score.h"
 
+/* not used here, but used in renderer.c, cond.c and main game loop*/
+#define GROUND_HEIGHT 340 
+
 typedef enum
 {
     MENU,
