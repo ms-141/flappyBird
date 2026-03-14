@@ -21,7 +21,7 @@
 #define PIPE_GAP_SIZE 100
 #define PIPE_MOVE_SPEED 6
 #define PIPE_MIN_Y 40
-#define PIPE_MAX_Y 180
+#define PIPE_MAX_Y 220
 
 typedef struct
 {
