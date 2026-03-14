@@ -41,7 +41,7 @@ void render_pipe(const SetOfPipes *pipes, UINT8 *base)
 
     if (dx > 0 && dx < PIPE_WIDTH)
     {
-        /* Erase the exposed right strip and draw only the new left strip. */
+        /* erase the exposed right strip and draw only the new left strip. */
         clear_region((UINT32 *)base, 0, pipes->x + PIPE_WIDTH, pipes->y, dx);
         clear_region((UINT32 *)base, bottom_pipe_y, pipes->x + PIPE_WIDTH, bottom_pipe_height, dx);
 
@@ -50,7 +50,11 @@ void render_pipe(const SetOfPipes *pipes, UINT8 *base)
     }
     else
     {
-        /* Fallback for initialization/teleport-like moves (e.g. respawn). */
+        /* fallback for initialization/teleport-like moves (e.g. respawn). */
+        /* clear the exposed right strip when respawning, it clears the whole column because
+        the pipe's new random y position will mess up the targeted region */
+        clear_region((UINT32 *)base, 0, pipes->prev_x + PIPE_WIDTH, SCREEN_HEIGHT, PIPE_MOVE_SPEED);
+
         plot_rectangle((UINT32 *)base, 0, pipes->x, pipes->y, PIPE_WIDTH);
         plot_rectangle((UINT32 *)base, bottom_pipe_y, pipes->x, bottom_pipe_height, PIPE_WIDTH);
     }
@@ -82,8 +86,5 @@ void render(Model *model, UINT8 *base)
         render_pipe(&model->pipes[i], base);
     }
 
-    if (model->score.curr_score != model->score.prev_score)
-    {
-        render_score(&model->score, base);
-    }
+    render_score(&model->score, base);
 }

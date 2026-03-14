@@ -8,7 +8,6 @@
  * This file implements the functions for the SetOfPipes object.
  *
  * File Status:
- * Currently the height of the pipes is not random, it is set to a static 200
  */
 
 #include "pipepair.h"
@@ -28,8 +27,9 @@ void movePipes(SetOfPipes *pipes)
 
 void resetPipes(SetOfPipes *pipes, unsigned int new_x)
 {
-    pipes->x = new_x;         /* Resets the horizontal position of the pipes to new_x */
     pipes->prev_x = pipes->x; /* update the previous horizontal position */
+    pipes->x = new_x;         /* Resets the horizontal position of the pipes to new_x */
+
     pipes->y = randomPipeY(); /* respawn with random gap height */
 }
 

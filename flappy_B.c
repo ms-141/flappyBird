@@ -19,7 +19,7 @@ for processing events are not yet implemented.
 
 #define TIMER_ADDR 0x462
 
-UINT32 get_time(void);
+UINT32 getTime(void);
 
 int main()
 {
@@ -27,18 +27,19 @@ int main()
     Model model;
     UINT8 *base = (UINT8 *)Physbase();
 
-    UINT32 timeThen, timeNow, timeElapsed; /* long? */
+    UINT32 time_then, time_now, time_elapsed;
 
     unsigned int quit = 0;
+    unsigned int clear_the_screen = 0; /* 0 = false, 1 = true */
 
-    srand((unsigned int)get_time());
+    srand((unsigned int)getTime());
 
     /* initializing and rendering first state */
     modelInit(&model);
     clear_screen((UINT32 *)base);
     render(&model, base);
 
-    timeThen = get_time();
+    time_then = getTime();
 
     while (!quit)
     {
@@ -60,24 +61,32 @@ int main()
             }
             else if (input == ' ' && model.state == GAME_OVER)
             {
+                clear_the_screen = 1;
                 handleRetry(&model);
             }
             else if (input == '1' && model.state == MENU)
             {
+                clear_the_screen = 1;
                 handle1p(&model);
             }
             else if (input == '2' && model.state == MENU)
             {
+                clear_the_screen = 1;
                 handle2p(&model);
             }
             /* else the input is not accepted (ignored) */
         }
 
-        timeNow = get_time();
-        timeElapsed = timeNow - timeThen;
+        time_now = getTime();
+        time_elapsed = time_now - time_then;
 
-        if (timeElapsed > 0)
+        if (time_elapsed > 0)
         {
+            if (clear_the_screen)
+            {
+                clear_screen((UINT32 *)base);
+                clear_the_screen = 0;
+            }
             /* synchronous events */
             handleBirdMovement(&model);
             handlePipeMovement(&model);
@@ -89,14 +98,14 @@ int main()
 
             render(&model, base);
 
-            timeThen = timeNow;
+            time_then = time_now;
         }
     }
 
     return 0;
 }
 
-UINT32 get_time()
+UINT32 getTime()
 {
     volatile UINT32 *timer = (volatile UINT32 *)TIMER_ADDR;
     UINT32 time;
