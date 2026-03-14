@@ -30,14 +30,15 @@ typedef struct
     unsigned int y; /* the vertical pos. of the bottom of the top pipe.
                     the pipe gap size will be added to this value to
                     determine the vertical pos. of the top of the bottom pipe */
+    unsigned int prev_y; /* the previous vertical pos. */
 } SetOfPipes;
 
 /* moves the pipes by PIPE_MOVE_SPEED pixels to the left */
 void movePipes(SetOfPipes *pipes);
-/* deletes pipes that are off screen and spawns new pipes with a new height */
+/* deletes pipes that are off screen and spawns new pipes with a new random height */
 void resetPipes(SetOfPipes *pipes, unsigned int new_x);
 /* checks if the pipes are off screen (x < 0)
 1 = off screen, 0 = on screen */
-int isOffScreen(SetOfPipes *pipes, unsigned int screen_width);
+int isOffScreen(SetOfPipes *pipes);
 
 #endif

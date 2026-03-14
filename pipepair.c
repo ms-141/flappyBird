@@ -30,10 +30,11 @@ void resetPipes(SetOfPipes *pipes, unsigned int new_x)
     pipes->prev_x = pipes->x; /* update the previous horizontal position */
     pipes->x = new_x;         /* Resets the horizontal position of the pipes to new_x */
 
-    pipes->y = randomPipeY(); /* respawn with random gap height */
+    pipes->prev_y = pipes->y; /* update the previous vertical position */
+    pipes->y = randomPipeY(); /* respawn with a random height */
 }
 
-int isOffScreen(SetOfPipes *pipes, unsigned int screen_width)
+int isOffScreen(SetOfPipes *pipes)
 {
-    return (pipes->x + PIPE_WIDTH) <= 0; /* returns true if the right edge of the pipes is off screen */
+    return (pipes->x) <= 0; /* returns true if the right edge of the pipes is off screen */
 }

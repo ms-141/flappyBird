@@ -35,29 +35,44 @@ void render_bird(const Bird *bird, UINT8 *base)
 
 void render_pipe(const SetOfPipes *pipes, UINT8 *base)
 {
-    int dx = pipes->prev_x - pipes->x;
+    /* the width of the region to be cleared when the pipes move */
+    int dx = PIPE_MOVE_SPEED;
+    /* the x-coordinate of the region to be cleared when the pipes move*/
+    unsigned int clear_x = pipes->x + PIPE_WIDTH;
+
     unsigned int bottom_pipe_y = pipes->y + PIPE_GAP_SIZE;
     unsigned int bottom_pipe_height = SCREEN_HEIGHT - bottom_pipe_y;
 
-    if (dx > 0 && dx < PIPE_WIDTH)
-    {
-        /* erase the exposed right strip and draw only the new left strip. */
-        clear_region((UINT32 *)base, 0, pipes->x + PIPE_WIDTH, pipes->y, dx);
-        clear_region((UINT32 *)base, bottom_pipe_y, pipes->x + PIPE_WIDTH, bottom_pipe_height, dx);
+    /* the y-coordinate of the region to be cleared when the pipes move. 
+    This is to make sure that after the pipe height is randomized, the 
+    pixels on the left of the screen are correctly cleared */
+    unsigned int pipe_y_to_clear;
+    /* bottom pipe */
+    unsigned int b_pipe_y_to_clear;
+    unsigned int b_pipe_height_to_clear;
 
-        plot_rectangle((UINT32 *)base, 0, pipes->x, pipes->y, dx);
-        plot_rectangle((UINT32 *)base, bottom_pipe_y, pipes->x, bottom_pipe_height, dx);
+    if (clear_x >= SCREEN_WIDTH)
+    {
+        clear_x -= SCREEN_WIDTH; /* wrap around to the left edge of the screen */
+        pipe_y_to_clear = pipes->prev_y;
+        b_pipe_y_to_clear = pipes->prev_y + PIPE_GAP_SIZE;
     }
     else
     {
-        /* fallback for initialization/teleport-like moves (e.g. respawn). */
-        /* clear the exposed right strip when respawning, it clears the whole column because
-        the pipe's new random y position will mess up the targeted region */
-        clear_region((UINT32 *)base, 0, pipes->prev_x + PIPE_WIDTH, SCREEN_HEIGHT, PIPE_MOVE_SPEED);
-
-        plot_rectangle((UINT32 *)base, 0, pipes->x, pipes->y, PIPE_WIDTH);
-        plot_rectangle((UINT32 *)base, bottom_pipe_y, pipes->x, bottom_pipe_height, PIPE_WIDTH);
+        pipe_y_to_clear = pipes->y;
+        b_pipe_y_to_clear = pipes->y + PIPE_GAP_SIZE;
     }
+    b_pipe_height_to_clear = SCREEN_HEIGHT - b_pipe_y_to_clear;
+
+    /* erase the exposed right strip and draw only the new left strip. */
+    clear_region((UINT32 *)base, 0, clear_x, pipe_y_to_clear, dx);
+    clear_region((UINT32 *)base, b_pipe_y_to_clear, clear_x, b_pipe_height_to_clear, dx);
+
+    plot_rectangle((UINT32 *)base, 0, pipes->x, pipes->y, dx);
+    plot_rectangle((UINT32 *)base, bottom_pipe_y, pipes->x, bottom_pipe_height, dx);
+
+    /* redraw the ground where the pipes where cleared */
+    plot_horizontal_line((UINT32 *)base, GROUND_HEIGHT, clear_x, dx);
 }
 
 void render_score(Score *score, UINT8 *base)

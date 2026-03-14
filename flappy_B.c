@@ -20,6 +20,7 @@ for processing events are not yet implemented.
 #define TIMER_ADDR 0x462
 
 UINT32 getTime(void);
+void renderBackground(UINT32 *base);
 
 int main()
 {
@@ -37,6 +38,7 @@ int main()
     /* initializing and rendering first state */
     modelInit(&model);
     clear_screen((UINT32 *)base);
+    renderBackground((UINT32 *)base);
     render(&model, base);
 
     time_then = getTime();
@@ -85,6 +87,7 @@ int main()
             if (clear_the_screen)
             {
                 clear_screen((UINT32 *)base);
+                renderBackground((UINT32 *)base);
                 clear_the_screen = 0;
             }
             /* synchronous events */
@@ -116,4 +119,9 @@ UINT32 getTime()
     Super(old_ssp);     /* exit privileged mode */
 
     return time;
+}
+
+void renderBackground(UINT32 *base)
+{
+    plot_horizontal_line(base, GROUND_HEIGHT, 0, SCREEN_WIDTH);
 }
