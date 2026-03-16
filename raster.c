@@ -15,11 +15,12 @@
 
 void clear_screen(UINT32 *base)
 {
-    UINT32 *loc = base;
     unsigned int i;
 
     for (i = 0; i < LONGS_PER_SCREEN; i++)
-        *(loc++) = 0;
+    {
+        base[i] = 0;
+    }
 }
 
 void clear_region(UINT32 *base, int row, int col, UINT16 length, UINT16 width)
@@ -52,13 +53,25 @@ void clear_region(UINT32 *base, int row, int col, UINT16 length, UINT16 width)
 
     for (r = start_row; r < end_row; r++)
     {
-        unsigned int row_offset = (r << 6) + (r << 4); /* r * 80 */
+        UINT8 *row_ptr = (UINT8 *)base + r * BYTES_PER_ROW;
+        int first_byte = start_col >> 3;
+        int last_byte = (end_col - 1) >> 3;
 
-        for (c = start_col; c < end_col; c++)
+        if (first_byte == last_byte)
         {
-            UINT8 *byte = (UINT8 *)base + row_offset + (c >> 3);
-
-            *byte &= ~(1 << (7 - (c & 7))); /* clear pixel by masking the byte, only pixel bit is cleared */
+            /* region fits inside one byte */
+            UINT8 mask = (0xFF >> (start_col & 7)) & (0xFF << (7 - ((end_col - 1) & 7)));
+            row_ptr[first_byte] &= ~mask;
+        }
+        else
+        {
+            /* clear the partial first byte */
+            row_ptr[first_byte] &= ~(0xFF >> (start_col & 7));
+            /* zero the full middle bytes */
+            for (c = first_byte + 1; c < last_byte; c++)
+                row_ptr[c] = 0;
+            /* clear the partial last byte */
+            row_ptr[last_byte] &= ~(0xFF << (7 - ((end_col - 1) & 7)));
         }
     }
 }
@@ -81,10 +94,10 @@ void plot_horizontal_line(UINT32 *base, int row, int col, UINT16 length)
     int shift_F, shift_B;
     UINT32 mask;
     UINT32 *place;
-	UINT32 SOLID = 0xFFFFFFFF;
-	int total_length = col + length;
-	
-	end = (total_length - 1) >> 5; /* where the line ends on the screen */
+    UINT32 SOLID = 0xFFFFFFFF;
+    int total_length = col + length;
+
+    end = (total_length - 1) >> 5; /* where the line ends on the screen */
 
     /* line completely off-screen (return) */
     if (row < 0 || row >= SCREEN_HEIGHT)
@@ -94,7 +107,7 @@ void plot_horizontal_line(UINT32 *base, int row, int col, UINT16 length)
     /* left is clipped */
     if (col < 0)
     {
-		total_length = col + length; /* so that the total length is representative of the line being off the screen*/
+        total_length = col + length; /* so that the total length is representative of the line being off the screen*/
         col = 0;
     }
     /* right is clipped */
@@ -102,17 +115,17 @@ void plot_horizontal_line(UINT32 *base, int row, int col, UINT16 length)
     {
         return;
     }
-	
-	if ((col + length) > SCREEN_WIDTH)
-	{
-		length = SCREEN_WIDTH - col;
-		total_length = col + length;
-	}
 
-	if (length <= 0)
-		return;
+    if ((col + length) > SCREEN_WIDTH)
+    {
+        length = SCREEN_WIDTH - col;
+        total_length = col + length;
+    }
 
-	end = (total_length - 1) >> 5;
+    if (length <= 0)
+        return;
+
+    end = (total_length - 1) >> 5;
     place = base + row * 20;
     x = col >> 5; /* divide by 32 */
     shift_F = col & 31;
@@ -139,10 +152,9 @@ void plot_horizontal_line(UINT32 *base, int row, int col, UINT16 length)
     }
 }
 
-
 void plot_vertical_line(UINT32 *base, int row, int col, UINT16 length)
 {
-    UINT32 SOLID = 0x80000000; 
+    UINT32 SOLID = 0x80000000;
     UINT32 mask;
     int start_row, end_row;
     int word_index;
@@ -157,7 +169,7 @@ void plot_vertical_line(UINT32 *base, int row, int col, UINT16 length)
     /* clip top */
     if (row < 0)
     {
-        length += row; 
+        length += row;
         row = 0;
     }
     /* clip bottom */
@@ -170,9 +182,9 @@ void plot_vertical_line(UINT32 *base, int row, int col, UINT16 length)
         return;
 
     word_index = col >> 5; /* divide by 32 */
-    bit_shift = 31 - (col & 31);  
+    bit_shift = 31 - (col & 31);
 
-    mask = SOLID >> (31 - bit_shift); 
+    mask = SOLID >> (31 - bit_shift);
 
     for (r = row; r < row + length; r++)
     {
@@ -294,18 +306,13 @@ void plot_triangle(UINT32 *base, int row, int col, UINT16 triangle_base, UINT16 
 void plot_rectangle(UINT32 *base, int row, int col, UINT16 length, UINT16 width)
 {
     int r;
-    int c;
-    UINT8 *base8 = (UINT8 *)base;
 
     if (length == 0 || width == 0)
         return;
 
     for (r = 0; r < length; r++)
     {
-        for (c = 0; c < width; c++)
-        {
-            plot_pixel(base8, row + r, col + c);
-        }
+        plot_horizontal_line(base, row + r, col, width);
     }
 }
 

@@ -27,61 +27,25 @@ UINT16 bird_bitmap[16] = {
 
 void render_bird(const Bird *bird, UINT8 *base)
 {
-    /* erase previous bird */
-    clear_region((UINT32 *)base, bird->prev_y, bird->x, BIRD_HEIGHT, BIRD_WIDTH);
-    /* draw bird at new position */
+    /* full redraw mode: only draw bird at current position */
     plot_16bit_bitmap((UINT16 *)base, bird->y, bird->x, bird_bitmap, BIRD_HEIGHT);
 }
 
 void render_pipe(const SetOfPipes *pipes, UINT8 *base)
 {
-    /* the width of the region to be cleared when the pipes move */
-    int dx = PIPE_MOVE_SPEED;
-    /* the x-coordinate of the region to be cleared when the pipes move*/
-    unsigned int clear_x = pipes->x + PIPE_WIDTH;
-
+    /* full redraw mode: draw full pipe rectangles every frame */
     unsigned int bottom_pipe_y = pipes->y + PIPE_GAP_SIZE;
     unsigned int bottom_pipe_height = SCREEN_HEIGHT - bottom_pipe_y;
 
-    /* the y-coordinate of the region to be cleared when the pipes move. 
-    This is to make sure that after the pipe height is randomized, the 
-    pixels on the left of the screen are correctly cleared */
-    unsigned int pipe_y_to_clear;
-    /* bottom pipe */
-    unsigned int b_pipe_y_to_clear;
-    unsigned int b_pipe_height_to_clear;
-
-    if (clear_x >= SCREEN_WIDTH)
-    {
-        clear_x -= SCREEN_WIDTH; /* wrap around to the left edge of the screen */
-        pipe_y_to_clear = pipes->prev_y;
-        b_pipe_y_to_clear = pipes->prev_y + PIPE_GAP_SIZE;
-    }
-    else
-    {
-        pipe_y_to_clear = pipes->y;
-        b_pipe_y_to_clear = pipes->y + PIPE_GAP_SIZE;
-    }
-    b_pipe_height_to_clear = SCREEN_HEIGHT - b_pipe_y_to_clear;
-
-    /* erase the exposed right strip and draw only the new left strip. */
-    clear_region((UINT32 *)base, 0, clear_x, pipe_y_to_clear, dx);
-    clear_region((UINT32 *)base, b_pipe_y_to_clear, clear_x, b_pipe_height_to_clear, dx);
-
-    plot_rectangle((UINT32 *)base, 0, pipes->x, pipes->y, dx);
-    plot_rectangle((UINT32 *)base, bottom_pipe_y, pipes->x, bottom_pipe_height, dx);
-
-    /* redraw the ground where the pipes where cleared */
-    plot_horizontal_line((UINT32 *)base, GROUND_HEIGHT, clear_x, dx);
+    plot_rectangle((UINT32 *)base, 0, pipes->x, pipes->y, PIPE_WIDTH);
+    plot_rectangle((UINT32 *)base, bottom_pipe_y, pipes->x, bottom_pipe_height, PIPE_WIDTH);
 }
 
 void render_score(Score *score, UINT8 *base)
 {
     char score_str[20];
 
-    /* erase previous score */
-    clear_region((UINT32 *)base, 20, 20, 16, 75);
-
+    /* no need to erase: clear_screen already wiped the back buffer */
     sprintf(score_str, "Score: %u", score->curr_score);
 
     plot_string(base, 20, 20, score_str);
