@@ -62,6 +62,8 @@ int main()
 
     time_then = getTime();
 
+    /* start_music(); */
+
     while (!quit)
     {
         if (processInput() == 1)
