@@ -23,7 +23,7 @@ void write_psg(int reg, UINT8 val)
     *PSG_reg_write = val;
 }
 
-void read_psg(int reg)
+UINT8 read_psg(int reg)
 {
     *PSG_reg_select = reg;
     return *PSG_reg_write;  /* return contents of selected register */
@@ -36,4 +36,9 @@ void set_tone(int channel, int tuning)
 
     write_psg(channel * 2, fine);       /* fine register is even-numbered for each channel*/
     write_psg(channel * 2 + 1, coarse); /* coarse register is odd-numbered for each channel */
+}
+
+void set_volume(int channel, int volume)
+{
+    write_psg(8 + channel, volume & 0x0F); /* volume registers are 8-10, and only lower 4 bits are used */
 }
