@@ -70,3 +70,10 @@ void set_noise(int tuning)
 {
     write_psg(6, tuning & 0x1F); /* noise register is 6, and only lower 5 bits are used */
 }
+
+void set_envelope(int shape, unsigned int sustain)
+{
+    write_psg(11, sustain & 0xFF); /* envelope sustain low byte */
+    write_psg(12, (sustain >> 8) & 0xFF); /* envelope sustain high byte */
+    write_psg(13, shape & 0x0F); /* only lower 4 bits are used */
+}
