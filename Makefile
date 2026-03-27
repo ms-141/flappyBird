@@ -1,8 +1,8 @@
-flappy_B.tos: flappy_B.o asynch.o bird.o cond.o model.o score.o pipepair.o synch.o raster.o renderer.o input.o
-	cc68x -g flappy_B.o asynch.o bird.o cond.o model.o score.o pipepair.o synch.o raster.o renderer.o input.o -o flappy_B.tos 
+flappy_B.tos: flappy_B.o asynch.o bird.o cond.o model.o score.o pipepair.o synch.o raster.o renderer.o input.o psg.o music.o
+	cc68x -g flappy_B.o asynch.o bird.o cond.o model.o score.o pipepair.o synch.o raster.o renderer.o input.o psg.o music.o -o flappy_B.tos 
 
-test.tos: test.o asynch.o bird.o cond.o model.o score.o pipepair.o synch.o
-	cc68x -g test.o asynch.o bird.o cond.o model.o score.o pipepair.o synch.o -o test.tos
+test.tos: test.o asynch.o bird.o cond.o model.o score.o pipepair.o synch.o psg.o
+	cc68x -g test.o asynch.o bird.o cond.o model.o score.o pipepair.o synch.o psg.o -o test.tos
 
 rndertst.tos: rnderTST.o bird.o model.o score.o pipepair.o synch.o raster.o renderer.o
 	cc68x -g rnderTST.o bird.o model.o score.o pipepair.o synch.o raster.o renderer.o -o rndertst.tos
