@@ -10,6 +10,9 @@ rndertst.tos: rnderTST.o bird.o model.o score.o pipepair.o synch.o raster.o rend
 rstertst.tos: rsterTST.o raster.o
 	cc68x -g rsterTST.o raster.o -o rstertst.tos
 
+psgtst.tos: psgTST.o psg.o
+	cc68x -g psgTST.o psg.o -o psgtst.tos
+
 results.txt: test.tos
 	test.tos > results.txt
 
@@ -54,3 +57,9 @@ renderer.o: renderer.c renderer.h model.h
 
 input.o: input.c input.h
 	cc68x -g -c input.c
+
+psg.o: psg.c psg.h
+	cc68x -g -c psg.c
+
+psgTST.o: psgTST.c psg.h
+	cc68x -g -c psgTST.c

@@ -15,6 +15,7 @@
 #define MUSIC_H
 
 #include "psg.h"
+
 typedef unsigned char UINT32;
 
 /* Begins the playing of the song by loading the data for the first note into the PSG. */
