@@ -62,3 +62,11 @@ void enable_channel(int channel, int tone_on, int noise_on)
     write_psg(7, mixer); /* write updated mixer settings back to PSG */
 }
 
+void stop_sound() {
+    write_psg(7, 0x3F); /* set all bits in mixer to disable all channels */
+}
+
+void set_noise(int tuning)
+{
+    write_psg(6, tuning & 0x1F); /* noise register is 6, and only lower 5 bits are used */
+}
