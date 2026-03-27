@@ -42,3 +42,23 @@ void set_volume(int channel, int volume)
 {
     write_psg(8 + channel, volume & 0x0F); /* volume registers are 8-10, and only lower 4 bits are used */
 }
+
+void enable_channel(int channel, int tone_on, int noise_on)
+{
+    int mixer = read_psg(7); /* read current mixer settings */
+    int tone_bit = 1 << channel; /* bit for this channel's tone */
+    int noise_bit = 1 << (channel + 3); /* bit for this channel's noise */
+
+    if (tone_on)
+        mixer &= ~tone_bit; /* clear bit to enable tone (0 = tone enabled) */
+    else
+        mixer |= tone_bit;  /* set bit to disable tone (1 = tone disabled)*/
+
+    if (noise_on)
+        mixer &= ~noise_bit; /* clear bit to enable noise */
+    else
+        mixer |= noise_bit;  /* set bit to disable noise */
+
+    write_psg(7, mixer); /* write updated mixer settings back to PSG */
+}
+
