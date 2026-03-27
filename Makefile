@@ -63,3 +63,6 @@ psg.o: psg.c psg.h
 
 psgTST.o: psgTST.c psg.h
 	cc68x -g -c psgTST.c
+
+music.o: music.c music.h psg.h
+	cc68x -g -c music.c
