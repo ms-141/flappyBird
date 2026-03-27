@@ -62,7 +62,7 @@ int main()
 
     time_then = getTime();
 
-    start_music();
+    /* start_music(); */
 
     while (!quit)
     {
