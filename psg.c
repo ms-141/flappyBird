@@ -72,8 +72,8 @@ void enable_channel(int channel, int tone_on, int noise_on)
     return;
 
     mixer = read_psg(7); /* read current mixer settings */
-    tone_bit = 1 << channel; /* bit for this channel's tone */
-    noise_bit = 1 << (channel + 3); /* bit for this channel's noise */
+    tone_bit = 1 << channel; 
+    noise_bit = 1 << (channel + 3); 
 
     if (tone_on)
         mixer &= ~tone_bit; /* clear bit to enable tone (0 = tone enabled) */
@@ -91,9 +91,9 @@ void enable_channel(int channel, int tone_on, int noise_on)
 void stop_sound() {
     write_psg(7, 0x3F); /* set all bits in mixer to disable all channels */
 
-    write_psg(8, 0);  /* volume A */
-    write_psg(9, 0);  /* volume B */
-    write_psg(10, 0); /* volume C */
+    write_psg(8, 0);  
+    write_psg(9, 0);  
+    write_psg(10, 0); 
 }
 
 void set_noise(int tuning)
