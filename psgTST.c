@@ -1,6 +1,5 @@
 #include "psg.h"
 #include <osbind.h>
-#include <stdio.h>
 
 int main()
 {

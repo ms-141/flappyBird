@@ -1,5 +1,5 @@
-flappy_B.tos: flappy_B.o asynch.o bird.o cond.o model.o score.o pipepair.o synch.o raster.o renderer.o input.o
-	cc68x -g flappy_B.o asynch.o bird.o cond.o model.o score.o pipepair.o synch.o raster.o renderer.o input.o -o flappy_B.tos 
+flappy_B.tos: flappy_B.o asynch.o bird.o cond.o model.o score.o pipepair.o synch.o raster.o renderer.o input.o music.o psg.o
+	cc68x -g flappy_B.o asynch.o bird.o cond.o model.o score.o pipepair.o synch.o raster.o renderer.o input.o music.o psg.o -o flappy_B.tos 
 
 test.tos: test.o asynch.o bird.o cond.o model.o score.o pipepair.o synch.o
 	cc68x -g test.o asynch.o bird.o cond.o model.o score.o pipepair.o synch.o -o test.tos
@@ -12,6 +12,9 @@ rstertst.tos: rsterTST.o raster.o
 
 psgtst.tos: psgTST.o psg.o
 	cc68x -g psgTST.o psg.o -o psgtst.tos
+
+musictst.tos: musicTST.o music.o psg.o
+	cc68x -g musicTST.o music.o psg.o -o musictst.tos
 
 results.txt: test.tos
 	test.tos > results.txt
@@ -63,6 +66,9 @@ psg.o: psg.c psg.h
 
 psgTST.o: psgTST.c psg.h
 	cc68x -g -c psgTST.c
+
+musicTST.o: musicTST.c music.h
+	cc68x -g -c musicTST.c
 
 music.o: music.c music.h psg.h
 	cc68x -g -c music.c

@@ -16,7 +16,15 @@
 
 #include "psg.h"
 
-typedef unsigned char UINT32;
+#define SONG_LENGTH 4
+
+typedef unsigned long UINT32;
+
+typedef struct 
+{
+    int tuning;
+    int duration; /* num of ticks */
+} Note;
 
 /* Begins the playing of the song by loading the data for the first note into the PSG. */
 void start_music();
