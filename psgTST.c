@@ -4,43 +4,34 @@
 
 int main()
 {
+    long i;
     long old_ssp = Super(0);
 
-    /* --- Test 1: Simple tone --- */
+    /* Test 1: Simple tone */
     set_tone(0, 500);
     set_volume(0, 10);
     enable_channel(0, 1, 0);
 
-    while (!Cconis())
-		;
-    Cnecin();
+    for (i = 0; i < 300000; i++) 
+        ;
 
-    /* --- Test 2: Change pitch --- */
+    /* Test 2: Change pitch */
     set_tone(0, 1000);
     set_volume(0, 10);
     enable_channel(0, 1, 0);
 
-    while (!Cconis())
-		;
-    Cnecin();
+    for (i = 0; i < 300000; i++) 
+        ;
 
-    /* --- Test 3: Turn off tone --- */
-    enable_channel(0, 0, 0);
-
-    while (!Cconis())	
-		;
-    Cnecin();
-
-    /* --- Test 4: Noise --- */
+    /* Test 3: Noise */
     set_noise(10);
     set_volume(0, 10);
     enable_channel(0, 0, 1);  /* noise only */
 
-    while (!Cconis())	
-		;
-    Cnecin();
+    for (i = 0; i < 300000; i++) 
+        ;
 
-    /* --- Test 5: Stop sound --- */
+    /* Test 4: Stop sound */
     stop_sound();
 
     Super(old_ssp);

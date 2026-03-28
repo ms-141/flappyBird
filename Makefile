@@ -58,11 +58,11 @@ renderer.o: renderer.c renderer.h model.h
 input.o: input.c input.h
 	cc68x -g -c input.c
 
-#psg.o: psg.c psg.h
-	#cc68x -g -c psg.c
+psg.o: psg.c psg.h
+	cc68x -g -c psg.c
 
 psgTST.o: psgTST.c psg.h
 	cc68x -g -c psgTST.c
 
-#music.o: music.c music.h psg.h
-	#cc68x -g -c music.c
+music.o: music.c music.h psg.h
+	cc68x -g -c music.c
