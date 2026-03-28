@@ -22,20 +22,16 @@ The main game loop is implemented.
 UINT32 getTime(void);
 UINT8 *alignTo256(UINT8 *raw_buffer);
 void renderBackground(UINT32 *base);
+void run_game(UINT8 *front_buffer, UINT8 *back_buffer);
+int make_splash_screen(UINT8 *base);
 
 int main()
 {
-    /* Main game loop: */
-    Model model;
     UINT8 *original_front = (UINT8 *)Physbase();
     UINT8 *back_buffer_raw;
     UINT8 *front_buffer = original_front;
     UINT8 *back_buffer;
-    UINT8 *temp_buffer;
-
-    UINT32 time_then, time_now, time_elapsed;
-
-    unsigned int quit = 0;
+    int choice;
 
     back_buffer_raw = (UINT8 *)malloc(BYTES_PER_SCREEN + FRAME_ALIGNMENT);
     if (back_buffer_raw == NULL)
@@ -46,15 +42,36 @@ int main()
 
     srand((unsigned int)getTime());
 
-    /* initializing and rendering first state */
+    /* Load Splash Screen  */
+    choice = make_splash_screen(back_buffer);
+    if (choice == 1)
+    {
+        run_game(front_buffer, back_buffer);
+    }
+
+    Setscreen(-1L, (long)original_front, -1);
+    Vsync(); /* wait for original screen to be restored */
+    free(back_buffer_raw);
+
+    return 0;
+}
+
+/* runs the main game loop */
+void run_game(UINT8 *front_buffer, UINT8 *back_buffer)
+{
+    Model model;
+    UINT8 *temp_buffer;
+    UINT32 time_then, time_now, time_elapsed;
+    unsigned int quit = 0;
+
     modelInit(&model);
+
     clear_screen((UINT32 *)back_buffer);
     renderBackground((UINT32 *)back_buffer);
     render(&model, back_buffer);
 
-    /* show first rendered frame at the next vertical blank */
     Setscreen(-1L, (long)back_buffer, -1);
-    Vsync(); /* wait for the flip to actually happen */
+    Vsync();
 
     temp_buffer = front_buffer;
     front_buffer = back_buffer;
@@ -62,19 +79,13 @@ int main()
 
     time_then = getTime();
 
-    /* start_music(); */
-
     while (!quit)
     {
         if (processInput() == 1)
         {
             char input = nextInput();
 
-            if (input == 'q' && model.state != MENU)
-            {
-                handleQuitToMenu(&model);
-            }
-            else if (input == 'q' && model.state == MENU)
+            if (input == 'q')
             {
                 quit = 1;
             }
@@ -85,14 +96,6 @@ int main()
             else if (input == ' ' && model.state == GAME_OVER)
             {
                 handleRetry(&model);
-            }
-            else if (input == '1' && model.state == MENU)
-            {
-                handle1p(&model);
-            }
-            else if (input == '2' && model.state == MENU)
-            {
-                handle2p(&model);
             }
             /* else the input is not accepted (ignored) */
         }
@@ -126,12 +129,39 @@ int main()
             time_then = time_now;
         }
     }
+}
 
-    Setscreen(-1L, (long)original_front, -1);
-    Vsync(); /* wait for original screen to be restored */
-    free(back_buffer_raw);
+int make_splash_screen(UINT8 *base)
+{
+    /*render a rectangle, everything within might have to be cleared, two options: 1p, quit*/
+    /* clear region for splash screen */
+    clear_screen((UINT32 *)base);
 
-    return 0;
+    /*make rectangle (4 lines)*/
+    plot_horizontal_line((UINT32 *)base, 125, 170, 300);
+    plot_horizontal_line((UINT32 *)base, 275, 170, 300);
+    plot_vertical_line((UINT32 *)base, 125, 170, 150);
+    plot_vertical_line((UINT32 *)base, 125, 470, 150);
+
+    /* write '1 - One Player' and 'Q - Quit Game'*/
+    plot_string(base, 185, 230, "1 - One Player");
+    plot_string(base, 215, 230, "Q - Quit Game");
+
+    /* splash screen is created. display it, then wait for user input */
+    Setscreen(-1L, (long)base, -1);
+    Vsync();
+
+    while (1)
+    {
+        if (processInput() == 1)
+        {
+            char input = nextInput();
+            if (input == '1')
+                return 1;
+            if (input == 'q')
+                return 0;
+        }
+    }
 }
 
 /*

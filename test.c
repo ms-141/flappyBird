@@ -144,7 +144,7 @@ int testAsynchReset1p(void)
     model.pipes[0].x = 12;
     model.score.curr_score = 9;
     model.score.high_score = 12;
-    model.state = MENU;
+    model.state = SPLASH_SCREEN;
 
     printModelState("[testAsynchReset1p] before handle1p", &model);
     handle1p(&model);

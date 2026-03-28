@@ -32,7 +32,7 @@ void handleRetry(Model *model) {
 }
 
 void handleQuitToMenu(Model *model) {
-    model->state = MENU;
+    model->state = SPLASH_SCREEN;
 }
 
 

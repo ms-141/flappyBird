@@ -24,7 +24,7 @@
 
 typedef enum
 {
-    MENU,
+    SPLASH_SCREEN,
     PLAYING,
     GAME_OVER
 } GameState;
