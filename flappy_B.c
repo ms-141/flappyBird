@@ -138,7 +138,7 @@ void run_game(UINT8 *front_buffer, UINT8 *back_buffer)
             time_then = time_now;
 
 
-            /* Show slpash screen at game over  */
+            /* Show splash screen at game over  */
             if (model.state == GAME_OVER)
             {
                 int choice = make_splash_screen(back_buffer);

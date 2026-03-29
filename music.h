@@ -33,8 +33,11 @@ void start_music();
 time elapsed since the previous call. */
 void update_music(UINT32 time_elapsed);
 
+/* Begins the playing of the main menu song by loading the data for the first note into the PSG. */
 void start_menu_music();
 
+/* Advances to the next note of the main menu song if necessary, as determined by the amount of
+time elapsed since the previous call. */
 void update_menu_music(UINT32 time_elapsed);
 
 
