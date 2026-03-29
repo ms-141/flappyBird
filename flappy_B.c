@@ -127,6 +127,17 @@ void run_game(UINT8 *front_buffer, UINT8 *back_buffer)
             back_buffer = temp_buffer;
 
             time_then = time_now;
+
+            /* Show slpash screen at game over  */
+            if (model.state == GAME_OVER)
+            {
+                int choice = make_splash_screen(back_buffer);
+                if (choice == 1)
+                    modelReset(&model);
+                else
+                    quit = 1;
+                    
+            }
         }
     }
 }
