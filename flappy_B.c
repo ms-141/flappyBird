@@ -15,6 +15,7 @@ The main game loop is implemented.
 #include "synch.h"
 #include "cond.h"
 #include "input.h"
+#include "music.h"
 
 #define TIMER_ADDR 0x462
 #define FRAME_ALIGNMENT 256
@@ -79,6 +80,10 @@ void run_game(UINT8 *front_buffer, UINT8 *back_buffer)
 
     time_then = getTime();
 
+    old_ssp = Super(0);
+    start_music();
+    Super(old_ssp);
+
     while (!quit)
     {
         if (processInput() == 1)
@@ -126,7 +131,12 @@ void run_game(UINT8 *front_buffer, UINT8 *back_buffer)
             front_buffer = back_buffer;
             back_buffer = temp_buffer;
 
+            old_ssp = Super(0);
+            update_music(time_elapsed);
+            Super(old_ssp);
+
             time_then = time_now;
+
 
             /* Show slpash screen at game over  */
             if (model.state == GAME_OVER)
@@ -144,6 +154,8 @@ void run_game(UINT8 *front_buffer, UINT8 *back_buffer)
 
 int make_splash_screen(UINT8 *base)
 {
+    UINT32 time_then, time_now, time_elapsed;
+
     /*render a rectangle, everything within might have to be cleared, two options: 1p, quit*/
     /* clear region for splash screen */
     /* clear only the splash screen region, preserving the background */
@@ -163,8 +175,23 @@ int make_splash_screen(UINT8 *base)
     Setscreen(-1L, (long)base, -1);
     Vsync();
 
+    time_then = getTime();
+
+    old_ssp = Super(0);
+    start_music();
+    Super(old_ssp);
+
     while (1)
-    {
+    {  
+        time_now = getTime();
+        time_elapsed = time_now - time_then;
+
+        old_ssp = Super(0);
+        update_music(time_elapsed);
+        Super(old_ssp);
+
+        time_then = time_now;
+
         if (processInput() == 1)
         {
             char input = nextInput();

@@ -14,7 +14,11 @@
 #ifndef PSG_H
 #define PSG_H
 
-typedef unsigned char UINT8;
+#include "raster.h"
+
+long old_ssp;
+
+/* typedef unsigned char UINT8; */
 
 /* Writes the given byte value (0-255) to the given PSG register (0-15). This is a helper
 routine to be used by the other functions in this module.*/
