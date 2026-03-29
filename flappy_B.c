@@ -156,8 +156,8 @@ int make_splash_screen(UINT8 *base)
     plot_vertical_line((UINT32 *)base, 125, 470, 150);
 
     /* write '1 - One Player' and 'Q - Quit Game'*/
-    plot_string(base, 185, 230, "1 - One Player");
-    plot_string(base, 215, 230, "Q - Quit Game");
+    plot_string(base, 175, 270, "1 - One Player");
+    plot_string(base, 205, 270, "Q - Quit Game");
 
     /* splash screen is created. display it, then wait for user input */
     Setscreen(-1L, (long)base, -1);
