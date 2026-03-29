@@ -33,4 +33,10 @@ void start_music();
 time elapsed since the previous call. */
 void update_music(UINT32 time_elapsed);
 
+void start_menu_music();
+
+void update_menu_music(UINT32 time_elapsed);
+
+
+
 #endif

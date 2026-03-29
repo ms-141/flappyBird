@@ -23,6 +23,15 @@ Note song[SONG_LENGTH] =
     {900, 20}
 };
 
+Note menu_song[SONG_LENGTH] = {   /* main menu music */
+
+    {508, 40}, 
+    {285, 30},
+    {320, 30},
+    {254, 20}
+
+};
+
 void start_music() {
     current_note = 0;
 
@@ -44,5 +53,29 @@ void update_music(UINT32 time_elapsed)
             current_note = 0;  /* loop song */
 
         set_tone(0, song[current_note].tuning);
+    }
+}
+
+void start_menu_music() {
+    current_note = 0;
+
+    set_volume(0, 5);
+    set_tone(0, menu_song[0].tuning);
+    enable_channel(0, 1, 0);
+}
+
+void update_menu_music(UINT32 time_elapsed)
+{
+    accumulated_time += time_elapsed;
+
+    if (accumulated_time >= menu_song[current_note].duration)
+    {
+        accumulated_time = 0;
+        current_note++;
+
+        if (current_note >= SONG_LENGTH)
+            current_note = 0;  /* loop song */
+
+        set_tone(0, menu_song[current_note].tuning);
     }
 }

@@ -178,7 +178,7 @@ int make_splash_screen(UINT8 *base)
     time_then = getTime();
 
     old_ssp = Super(0);
-    start_music();
+    start_menu_music();
     Super(old_ssp);
 
     while (1)
@@ -187,7 +187,7 @@ int make_splash_screen(UINT8 *base)
         time_elapsed = time_now - time_then;
 
         old_ssp = Super(0);
-        update_music(time_elapsed);
+        update_menu_music(time_elapsed);
         Super(old_ssp);
 
         time_then = time_now;
