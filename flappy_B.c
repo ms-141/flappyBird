@@ -137,7 +137,6 @@ void run_game(UINT8 *front_buffer, UINT8 *back_buffer)
 
             time_then = time_now;
 
-
             /* Show splash screen at game over  */
             if (model.state == GAME_OVER)
             {
@@ -146,7 +145,6 @@ void run_game(UINT8 *front_buffer, UINT8 *back_buffer)
                     modelReset(&model);
                 else
                     quit = 1;
-                    
             }
         }
     }
@@ -171,6 +169,19 @@ int make_splash_screen(UINT8 *base)
     plot_string(base, 175, 270, "1 - One Player");
     plot_string(base, 205, 270, "Q - Quit Game");
 
+    /* plot_horizontal_line(UINT32 *base, int row, int col, UINT16 length) */
+    plot_horizontal_line((UINT32 *)base, 170, 260, 140);
+    plot_horizontal_line((UINT32 *)base, 190, 260, 140);
+
+    plot_horizontal_line((UINT32 *)base, 200, 260, 140);
+    plot_horizontal_line((UINT32 *)base, 220, 260, 140);
+
+    plot_vertical_line((UINT32 *)base, 170, 260, 20);
+    plot_vertical_line((UINT32 *)base, 170, 400, 20);
+
+    plot_vertical_line((UINT32 *)base, 200, 260, 20);
+    plot_vertical_line((UINT32 *)base, 200, 400, 20);
+
     /* splash screen is created. display it, then wait for user input */
     Setscreen(-1L, (long)base, -1);
     Vsync();
@@ -182,7 +193,7 @@ int make_splash_screen(UINT8 *base)
     Super(old_ssp);
 
     while (1)
-    {  
+    {
         time_now = getTime();
         time_elapsed = time_now - time_then;
 
