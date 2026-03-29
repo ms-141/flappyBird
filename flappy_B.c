@@ -135,7 +135,8 @@ int make_splash_screen(UINT8 *base)
 {
     /*render a rectangle, everything within might have to be cleared, two options: 1p, quit*/
     /* clear region for splash screen */
-    clear_screen((UINT32 *)base);
+    /* clear only the splash screen region, preserving the background */
+    clear_region((UINT32 *)base, 125, 170, 150, 300);
 
     /*make rectangle (4 lines)*/
     plot_horizontal_line((UINT32 *)base, 125, 170, 300);
