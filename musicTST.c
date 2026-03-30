@@ -19,6 +19,7 @@ int main()
         }
     }
     Cnecin();
+    stop_sound();
 
     Super(old_ssp);
     return 0;

@@ -18,8 +18,6 @@
 
 #define SONG_LENGTH 4
 
-/* typedef unsigned long UINT32; */
-
 typedef struct 
 {
     int tuning;

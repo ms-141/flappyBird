@@ -54,6 +54,10 @@ int main()
     Vsync(); /* wait for original screen to be restored */
     free(back_buffer_raw);
 
+    old_ssp = Super(0);
+    stop_sound();
+    Super(old_ssp);
+
     return 0;
 }
 
