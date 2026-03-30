@@ -165,23 +165,25 @@ int make_splash_screen(UINT8 *base)
     plot_vertical_line((UINT32 *)base, 125, 170, 150);
     plot_vertical_line((UINT32 *)base, 125, 470, 150);
 
+    /* Title */
+    plot_string((UINT8 *)base, 140, 285, "FLAPPY BIRD");
+
     /* write '1 - One Player' and 'Q - Quit Game'*/
-    plot_string(base, 175, 270, "1 - One Player");
-    plot_string(base, 205, 270, "Q - Quit Game");
+    plot_string((UINT8 *)base, 175, 270, "1 - One Player");
+    plot_string((UINT8 *)base, 205, 270, "Q - Quit Game");
 
     /* plot_horizontal_line(UINT32 *base, int row, int col, UINT16 length) */
-    plot_horizontal_line((UINT32 *)base, 170, 250, 150);
-    plot_horizontal_line((UINT32 *)base, 190, 250, 150);
+    plot_horizontal_line((UINT32 *)base, 170, 260, 135);
+    plot_horizontal_line((UINT32 *)base, 195, 260, 135);
 
-    plot_horizontal_line((UINT32 *)base, 200, 250, 150);
-    plot_horizontal_line((UINT32 *)base, 220, 250, 150);
+    plot_horizontal_line((UINT32 *)base, 200, 260, 135);
+    plot_horizontal_line((UINT32 *)base, 225, 260, 135);
 
-    /* plot_vertical_line(UINT32 *base, int row, int col, UINT16 length) */
-    plot_vertical_line((UINT32 *)base, 170, 250, 20);
-    plot_vertical_line((UINT32 *)base, 170, 400, 20);
+    plot_vertical_line((UINT32 *)base, 170, 260, 25);
+    plot_vertical_line((UINT32 *)base, 170, 395, 25);
 
-    plot_vertical_line((UINT32 *)base, 200, 250, 20);
-    plot_vertical_line((UINT32 *)base, 200, 400, 20);
+    plot_vertical_line((UINT32 *)base, 200, 260, 25);
+    plot_vertical_line((UINT32 *)base, 200, 395, 25);
 
     /* splash screen is created. display it, then wait for user input */
     Setscreen(-1L, (long)base, -1);
