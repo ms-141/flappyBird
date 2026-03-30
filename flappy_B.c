@@ -92,15 +92,11 @@ void run_game(UINT8 *front_buffer, UINT8 *back_buffer)
 
             if (input == 'q')
             {
-                quit = 1;
+                model.state = GAME_OVER;
             }
             else if (input == ' ' && model.state == PLAYING)
             {
                 handleJump(&model);
-            }
-            else if (input == ' ' && model.state == GAME_OVER)
-            {
-                handleRetry(&model);
             }
             /* else the input is not accepted (ignored) */
         }
@@ -159,13 +155,13 @@ int make_splash_screen(UINT8 *base)
     /* clear only the splash screen region, preserving the background */
     clear_region((UINT32 *)base, 125, 170, 150, 300);
 
-    /*make rectangle (4 lines)*/
+    /* make rectangle (4 lines) */
     plot_horizontal_line((UINT32 *)base, 125, 170, 300);
     plot_horizontal_line((UINT32 *)base, 275, 170, 300);
     plot_vertical_line((UINT32 *)base, 125, 170, 150);
     plot_vertical_line((UINT32 *)base, 125, 470, 150);
 
-    /* Title */
+    /* title */
     plot_string((UINT8 *)base, 140, 285, "FLAPPY BIRD");
 
     /* write '1 - One Player' and 'Q - Quit Game'*/

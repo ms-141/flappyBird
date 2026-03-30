@@ -50,7 +50,6 @@ void render_score(Score *score, UINT8 *base)
 
     plot_string(base, 20, 20, score_str);
 
-    score->prev_score = score->curr_score;
 }
 
 /* function that gets repeated on the game loop*/

@@ -18,8 +18,6 @@
 
 long old_ssp;
 
-/* typedef unsigned char UINT8; */
-
 /* Writes the given byte value (0-255) to the given PSG register (0-15). This is a helper
 routine to be used by the other functions in this module.*/
 void write_psg(int reg, UINT8 val);
