@@ -16,9 +16,12 @@ The main game loop is implemented.
 #include "cond.h"
 #include "input.h"
 #include "music.h"
+#include "effects.h"
 
 #define TIMER_ADDR 0x462
 #define FRAME_ALIGNMENT 256
+
+long old_ssp;
 
 UINT32 getTime(void);
 UINT8 *alignTo256(UINT8 *raw_buffer);
@@ -242,7 +245,6 @@ UINT32 getTime()
 {
     volatile UINT32 *timer = (volatile UINT32 *)TIMER_ADDR;
     UINT32 time;
-    long old_ssp;
 
     old_ssp = Super(0); /* enter supervisor mode to read system variable */
     time = *timer;
