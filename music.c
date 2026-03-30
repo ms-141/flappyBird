@@ -23,13 +23,12 @@ Note song[SONG_LENGTH] =
     {900, 20}
 };
 
-Note menu_song[SONG_LENGTH] = {   /* main menu music */
-
+Note menu_song[SONG_LENGTH] = 
+{
     {508, 40}, 
     {285, 30},
     {320, 30},
     {254, 20}
-
 };
 
 void start_music() {
