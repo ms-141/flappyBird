@@ -154,7 +154,7 @@ int make_splash_screen(UINT8 *base)
 {
     UINT32 time_then, time_now, time_elapsed;
 
-    /*render a rectangle, everything within might have to be cleared, two options: 1p, quit*/
+    /* render a rectangle, everything within might have to be cleared, two options: 1p and quit */
     /* clear region for splash screen */
     /* clear only the splash screen region, preserving the background */
     clear_region((UINT32 *)base, 125, 170, 150, 300);
@@ -170,16 +170,17 @@ int make_splash_screen(UINT8 *base)
     plot_string(base, 205, 270, "Q - Quit Game");
 
     /* plot_horizontal_line(UINT32 *base, int row, int col, UINT16 length) */
-    plot_horizontal_line((UINT32 *)base, 170, 260, 140);
-    plot_horizontal_line((UINT32 *)base, 190, 260, 140);
+    plot_horizontal_line((UINT32 *)base, 170, 250, 150);
+    plot_horizontal_line((UINT32 *)base, 190, 250, 150);
 
-    plot_horizontal_line((UINT32 *)base, 200, 260, 140);
-    plot_horizontal_line((UINT32 *)base, 220, 260, 140);
+    plot_horizontal_line((UINT32 *)base, 200, 250, 150);
+    plot_horizontal_line((UINT32 *)base, 220, 250, 150);
 
-    plot_vertical_line((UINT32 *)base, 170, 260, 20);
+    /* plot_vertical_line(UINT32 *base, int row, int col, UINT16 length) */
+    plot_vertical_line((UINT32 *)base, 170, 250, 20);
     plot_vertical_line((UINT32 *)base, 170, 400, 20);
 
-    plot_vertical_line((UINT32 *)base, 200, 260, 20);
+    plot_vertical_line((UINT32 *)base, 200, 250, 20);
     plot_vertical_line((UINT32 *)base, 200, 400, 20);
 
     /* splash screen is created. display it, then wait for user input */
