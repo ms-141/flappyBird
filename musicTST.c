@@ -1,3 +1,17 @@
+/*
+ * File: musicTST.c
+ *
+ * Team Members: Muji Shah, Gurshan Chera, Declan McCarthy
+ * Date Created: March 28, 2026
+ *
+ * Description:
+ * Test driver for the music.
+ *
+ * File Status: 
+ * Need to implement test for menu music intuitively
+ * 
+*/
+
 #include "music.h"
 #include <osbind.h>
 
