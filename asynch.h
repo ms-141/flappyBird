@@ -17,6 +17,7 @@
 #ifndef ASYNCH_H
 #define ASYNCH_H
 #include "model.h"
+#include "effects.h"
 
 /* handles user depressing spacebar in game */
 void handleJump(Model *model);

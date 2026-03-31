@@ -16,6 +16,8 @@
 
 void handleJump(Model *model) {
     model->bird.jump_ticks_remaining = 3;
+
+    play_jump_effect();
 }
 
 void handle1p(Model *model) {

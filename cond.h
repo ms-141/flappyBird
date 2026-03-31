@@ -17,6 +17,7 @@
 #include "bird.h"
 #include "pipepair.h"
 #include "score.h"
+#include "effects.h"
 
 #define SCREEN_WIDTH 640
 #define BIRD_COLLISION_MARGIN 3

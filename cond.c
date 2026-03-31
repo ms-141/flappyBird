@@ -45,6 +45,8 @@ void handleBirdCollision(Model *model)
         if (checkBirdCollision(&model->bird, &model->pipes[i]))
         {
             model->state = GAME_OVER;
+
+            play_game_over_effect();
         }
     }
 }
