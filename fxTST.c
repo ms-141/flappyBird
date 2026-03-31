@@ -1,11 +1,11 @@
+#include <osbind.h>
 #include "effects.h"
 #include "psg.h"
-#include <osbind.h>
 
 int main()
 {
     long i;
-    long old_ssp = Super(0);
+    long old_ssp;
 
     play_jump_effect();
 
@@ -15,8 +15,8 @@ int main()
 
     for (i = 0; i < 500000; i++);
 
+    old_ssp = Super(0);
     stop_sound();
-
     Super(old_ssp);
 
     return 0;

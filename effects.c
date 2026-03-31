@@ -10,10 +10,13 @@
  * File Status: 
 */
 
+#include <osbind.h>
 #include "effects.h"
 
 void play_jump_effect()
 {
+    long old_ssp = Super(0);
+
     set_volume(2, 16); /* enable envelope (bit 4 = 1) */
     set_tone(2, 500);    
 
@@ -21,10 +24,14 @@ void play_jump_effect()
     set_envelope(0x09, 1000); /* short envelope */
 
     enable_channel(2, 1, 0); 
+
+    Super(old_ssp);
 }
 
 void play_game_over_effect()
 {
+    long old_ssp = Super(0);
+
     set_volume(2, 16);     
     set_tone(2, 2000);      
     set_noise(5);
@@ -32,4 +39,6 @@ void play_game_over_effect()
     set_envelope(0x09, 7000);  /* long envelope */
 
     enable_channel(2, 1, 1); 
+
+    Super(old_ssp);
 }
