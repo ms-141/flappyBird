@@ -29,7 +29,7 @@ UINT8 read_psg(int reg)
 {
     *PSG_reg_select = reg;
 
-    return *PSG_reg_select;
+    return *PSG_reg_write;
 }
 
 void set_tone(int channel, int tuning)
@@ -54,10 +54,10 @@ void set_volume(int channel, int volume)
     if (channel < 0 || channel > 2) 
         return;
 
-    if (volume < 0 || volume > 15)
+    if (volume < 0 || volume > 31)
         return;
 
-    write_psg(8 + channel, volume & 0x0F); /* volume registers are 8-10, and only lower 4 bits are used */
+    write_psg(8 + channel, volume & 0x1F); /* volume registers are 8-10, and only lower 5 bits are used */
 }
 
 void enable_channel(int channel, int tone_on, int noise_on)
