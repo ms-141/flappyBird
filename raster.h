@@ -212,4 +212,22 @@ void plot_character(UINT8 *base, int row, int col, char ch);
 */
 void plot_string(UINT8 *base, int row, int col, char *ch);
 
+/* 
+ PURPOSE: Replaces TOS call to Physbase which retrieves current frame buffer start address 
+   
+ INPUT: None
+
+ OUTPUT: Returns current frame buffer start address
+*/
+UINT16 *get_video_base();
+
+/* 
+ PURPOSE: Replaces TOS call to Setscreen which changes the frame buffer start address
+   
+ INPUT: Address(UINT16*): to current frame buffer start address
+
+ OUTPUT: Returns current frame buffer start address
+*/
+void set_video_base(UINT16 *);
+
 #endif
