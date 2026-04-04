@@ -1,5 +1,5 @@
-flappy_B.tos: flappy_B.o asynch.o bird.o cond.o model.o score.o pipepair.o synch.o raster.o renderer.o input.o music.o psg.o effects.o physbase.o
-	cc68x -g flappy_B.o asynch.o bird.o cond.o model.o score.o pipepair.o synch.o raster.o renderer.o input.o music.o psg.o effects.o physbase.o -o flappy_B.tos 
+flappy_B.tos: flappy_B.o asynch.o bird.o cond.o model.o score.o pipepair.o synch.o raster.o renderer.o input.o music.o psg.o effects.o
+	cc68x -g flappy_B.o asynch.o bird.o cond.o model.o score.o pipepair.o synch.o raster.o renderer.o input.o music.o psg.o effects.o -o flappy_B.tos 
 
 test.tos: test.o asynch.o bird.o cond.o model.o score.o pipepair.o synch.o
 	cc68x -g test.o asynch.o bird.o cond.o model.o score.o pipepair.o synch.o -o test.tos
@@ -82,8 +82,7 @@ effects.o: effects.c effects.h
 fxTST.o: fxTST.c effects.h psg.h
 	cc68x -g -c fxTST.c
 
-physbase.o: physbase.s
-	gen -L2 -D physbase.s
+#physbase.o: physbase.s gen -L2 -D physbase.s
 
 
 
