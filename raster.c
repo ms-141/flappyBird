@@ -511,3 +511,4 @@ void plot_string(UINT8 *base, int row, int col, char *ch)
         plot_character(base, row, col + (i * 8), ch[i]);
     }
 }
+

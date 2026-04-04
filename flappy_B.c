@@ -31,7 +31,8 @@ int make_splash_screen(UINT8 *base);
 
 int main()
 {
-    UINT8 *original_front = (UINT8 *)Physbase();
+    /* UINT8 *original_front = (UINT8 *)Physbase(); */
+    UINT8 *original_front = get_video_base();
     UINT8 *back_buffer_raw;
     UINT8 *front_buffer = original_front;
     UINT8 *back_buffer;
