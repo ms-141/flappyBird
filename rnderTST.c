@@ -7,10 +7,10 @@
  * Description:
  * Test driver for the renderer.
  *
- * File Status: 
+ * File Status:
  * Since clock ticks are used yet, things like the bird jumping,
  * or the pipes moving are done instantly (instead of over time).
-*/
+ */
 
 #include <stdio.h>
 #include <osbind.h>
@@ -21,7 +21,7 @@
 
 int main()
 {
-    UINT8 *base = (UINT8 *)Physbase();
+    UINT8 *base = (UINT8 *)get_video_base();
     Model myModel;
 
     int i;
@@ -33,10 +33,10 @@ int main()
     modelInit(&myModel);
     render(&myModel, base);
     while (!Cconis())
-    ; /* wait for key press */
+        ;     /* wait for key press */
     Cnecin(); /* clear key press */
     clear_screen((UINT32 *)base);
-    
+
     /* Test 2: Bird jumped */
     modelInit(&myModel);
     myModel.bird.jump_ticks_remaining = 3;
@@ -46,10 +46,10 @@ int main()
     }
     render(&myModel, base);
     while (!Cconis())
-    ; 
-    Cnecin(); 
+        ;
+    Cnecin();
     clear_screen((UINT32 *)base);
-   
+
     /* Test 3: Pipes moved */
     modelInit(&myModel);
     myModel.pipes[0].x = 100;
@@ -57,8 +57,8 @@ int main()
     myModel.pipes[2].x = 400;
     render(&myModel, base);
     while (!Cconis())
-    ; 
-    Cnecin(); 
+        ;
+    Cnecin();
     clear_screen((UINT32 *)base);
 
     /* Test 4: Score increased */
@@ -66,7 +66,7 @@ int main()
     increaseScore(&myModel.score);
     render(&myModel, base);
     while (!Cconis())
-    ;
+        ;
     Cnecin();
     clear_screen((UINT32 *)base);
 

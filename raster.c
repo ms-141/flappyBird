@@ -12,6 +12,7 @@
 
 #include "raster.h"
 #include <linea.h>
+#include <osbind.h>
 
 void clear_screen(UINT32 *base)
 {
@@ -512,3 +513,51 @@ void plot_string(UINT8 *base, int row, int col, char *ch)
     }
 }
 
+/*----- Function: get_video_base -----
+
+ PURPOSE: Retrieves the current frame buffer start address from the video base register.
+          This replaces the TOS Physbase system call.
+
+ INPUT: None
+
+ OUTPUT: Returns pointer to the current frame buffer start address
+
+*/
+UINT16 *get_video_base()
+{
+    long old_ssp;
+    volatile UINT8 *video_base_hi = (volatile UINT8 *)0xFF8201;
+    volatile UINT8 *video_base_mid = (volatile UINT8 *)0xFF8203;
+    UINT32 address;
+
+    old_ssp = Super(0);
+    /* Video base uses the high and middle bytes; low byte is always 0 in ST high-res mode. */
+    address = ((UINT32)(*video_base_hi) << 16) | ((UINT32)(*video_base_mid) << 8);
+    Super(old_ssp);
+
+    return (UINT16 *)address;
+}
+
+/*----- Function: set_video_base -----
+
+ PURPOSE: Sets the frame buffer start address in the video base register.
+          This replaces the TOS Setscreen system call.
+          Note: The actual page flip occurs at the next VSYNC.
+
+ INPUT: Address(UINT16*): pointer to the new frame buffer start address
+
+ OUTPUT: None
+
+*/
+void set_video_base(UINT16 *address)
+{
+    long old_ssp;
+    volatile UINT8 *video_base_hi = (volatile UINT8 *)0xFF8201;
+    volatile UINT8 *video_base_mid = (volatile UINT8 *)0xFF8203;
+    UINT32 addr = (UINT32)address;
+
+    old_ssp = Super(0);
+    *video_base_hi = (UINT8)(addr >> 16);
+    *video_base_mid = (UINT8)(addr >> 8);
+    Super(old_ssp);
+}

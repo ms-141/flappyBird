@@ -31,8 +31,7 @@ int make_splash_screen(UINT8 *base);
 
 int main()
 {
-    UINT8 *original_front = (UINT8 *)Physbase();
-   /* UINT8 *original_front = get_video_base(); */
+    UINT8 *original_front = (UINT8 *)get_video_base();
     UINT8 *back_buffer_raw;
     UINT8 *front_buffer = original_front;
     UINT8 *back_buffer;
@@ -54,7 +53,7 @@ int main()
         run_game(front_buffer, back_buffer);
     }
 
-    Setscreen(-1L, (long)original_front, -1);
+    set_video_base((UINT16 *)original_front);
     Vsync(); /* wait for original screen to be restored */
     free(back_buffer_raw);
 
@@ -79,7 +78,7 @@ void run_game(UINT8 *front_buffer, UINT8 *back_buffer)
     renderBackground((UINT32 *)back_buffer);
     render(&model, back_buffer);
 
-    Setscreen(-1L, (long)back_buffer, -1);
+    set_video_base((UINT16 *)back_buffer);
     Vsync();
 
     temp_buffer = front_buffer;
@@ -128,7 +127,7 @@ void run_game(UINT8 *front_buffer, UINT8 *back_buffer)
             render(&model, back_buffer);
 
             /* page flip: schedule, wait for vblank, then swap pointers */
-            Setscreen(-1L, (long)back_buffer, -1);
+            set_video_base((UINT16 *)back_buffer);
             Vsync(); /* wait for the flip to actually happen */
 
             temp_buffer = front_buffer;
@@ -190,7 +189,7 @@ int make_splash_screen(UINT8 *base)
     plot_vertical_line((UINT32 *)base, 200, 395, 25);
 
     /* splash screen is created. display it, then wait for user input */
-    Setscreen(-1L, (long)base, -1);
+    set_video_base((UINT16 *)base);
     Vsync();
 
     time_then = getTime();
