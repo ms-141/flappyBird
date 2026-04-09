@@ -221,13 +221,15 @@ void plot_string(UINT8 *base, int row, int col, char *ch);
 */
 UINT16 *get_video_base();
 
-/* 
- PURPOSE: Replaces TOS call to Setscreen which changes the frame buffer start address
-   
- INPUT: Address(UINT16*): to current frame buffer start address
+/*
+ PURPOSE: Sets the frame buffer start address in the video base register.
+          This replaces the TOS Setscreen system call.
+          Note: The actual page flip occurs at the next VSYNC.
 
- OUTPUT: Returns current frame buffer start address
-*/
+ INPUT: Address(UINT16*): pointer to the new frame buffer start address
+
+ OUTPUT: None
+ */
 void set_video_base(UINT16 *);
 
 #endif
