@@ -1,33 +1,8 @@
     xdef _vbl_isr
-    xref _update_music
-    xref _handleBirdMovement
-    xref _handlePipeMovement
-    xref _handleBirdCollision
-    xref _handlePipeRespawn
-    xref _handleScoreIncrease
-    xref _model
-    xref _render_request
+    xref _do_VBL_ISR
 
 _vbl_isr:
-    movem.l	d0-d7/a0-a6,-(sp)	; save all registers
-    move.l	#1,-(sp)
-    jsr	_update_music
-    addq.l	#4,sp
-    pea	_model
-    jsr	_handleBirdMovement
-    addq.l	#4,sp
-    pea	_model
-    jsr	_handlePipeMovement
-    addq.l	#4,sp
-    pea	_model
-    jsr	_handleBirdCollision
-    addq.l	#4,sp
-    pea	_model
-    jsr	_handlePipeRespawn
-    addq.l	#4,sp
-    pea	_model
-    jsr	_handleScoreIncrease
-    addq.l	#4,sp
-    move.w	#1,_render_request
-    movem.l	(sp)+,d0-d7/a0-a6
+    movem.l	d0-d2/a0-a2,-(sp)	; save C68 scratch registers before calling C
+    jsr	_do_VBL_ISR
+    movem.l	(sp)+,d0-d2/a0-a2
     rte

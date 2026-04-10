@@ -20,13 +20,15 @@ The main game loop is implemented.
 
 #define TIMER_ADDR 0x462
 #define FRAME_ALIGNMENT 256
-#define VBL_VECTOR_ADDR 0x70
+#define VBL_VECTOR_NUM 28
+
+typedef void (*Vector)(void);
 
 long old_ssp;
 Model model;
 volatile UINT16 render_request = 0;
 
-static void (*old_vbl_isr)(void) = 0;
+static Vector old_vbl_isr = 0;
 static int vbl_installed = 0;
 
 void vbl_isr(void);
@@ -36,6 +38,8 @@ UINT8 *alignTo256(UINT8 *raw_buffer);
 void renderBackground(UINT32 *base);
 void run_game(UINT8 *front_buffer, UINT8 *back_buffer);
 int make_splash_screen(UINT8 *base);
+Vector install_vector(int num, Vector vector);
+void do_VBL_ISR(void);
 void install_vbl(void);
 void remove_vbl(void);
 
@@ -80,6 +84,7 @@ void run_game(UINT8 *front_buffer, UINT8 *back_buffer)
     UINT8 *temp_buffer;
     unsigned int quit = 0;
     int choice;
+    char input;
 
     modelInit(&model);
 
@@ -105,7 +110,7 @@ void run_game(UINT8 *front_buffer, UINT8 *back_buffer)
     {
         if (processInput() == 1)
         {
-            char input = nextInput();
+            input = nextInput();
 
             if (input == 'q')
             {
@@ -176,6 +181,7 @@ void run_game(UINT8 *front_buffer, UINT8 *back_buffer)
 int make_splash_screen(UINT8 *base)
 {
     UINT32 time_then, time_now, time_elapsed;
+    char input;
 
     /* render a rectangle, everything within might have to be cleared, two options: 1p and quit */
     /* clear region for splash screen */
@@ -231,7 +237,7 @@ int make_splash_screen(UINT8 *base)
 
         if (processInput() == 1)
         {
-            char input = nextInput();
+            input = nextInput();
             if (input == '1')
                 return 1;
             if (input == 'q')
@@ -278,17 +284,23 @@ void renderBackground(UINT32 *base)
     plot_horizontal_line(base, GROUND_HEIGHT, 0, SCREEN_WIDTH);
 }
 
+void do_VBL_ISR(void)
+{
+    update_music(1);
+    handleBirdMovement(&model);
+    handlePipeMovement(&model);
+    handleBirdCollision(&model);
+    handlePipeRespawn(&model);
+    handleScoreIncrease(&model);
+    render_request = 1;
+}
+
 void install_vbl(void)
 {
-    void (**vbl_vector)(void) = (void (**)(void))VBL_VECTOR_ADDR;
-
     if (vbl_installed)
         return;
 
-    old_ssp = Super(0);
-    old_vbl_isr = *vbl_vector;
-    *vbl_vector = vbl_isr;
-    Super(old_ssp);
+    old_vbl_isr = install_vector(VBL_VECTOR_NUM, vbl_isr);
 
     render_request = 0;
     vbl_installed = 1;
@@ -296,15 +308,24 @@ void install_vbl(void)
 
 void remove_vbl(void)
 {
-    void (**vbl_vector)(void) = (void (**)(void))VBL_VECTOR_ADDR;
-
     if (!vbl_installed)
         return;
 
-    old_ssp = Super(0);
-    *vbl_vector = old_vbl_isr;
-    Super(old_ssp);
+    install_vector(VBL_VECTOR_NUM, old_vbl_isr);
 
     render_request = 0;
     vbl_installed = 0;
+}
+
+Vector install_vector(int num, Vector vector)
+{
+    Vector orig;
+    Vector *vectp = (Vector *)((long)num << 2);
+
+    old_ssp = Super(0);
+    orig = *vectp;
+    *vectp = vector;
+    Super(old_ssp);
+
+    return orig;
 }
