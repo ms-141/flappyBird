@@ -1,3 +1,5 @@
+		xdef _set_video_base
+
 _set_video_base:
 		movem.l	d0-d7/a0-a6,-(sp)
 		clr.l	-(sp)
@@ -15,12 +17,14 @@ _set_video_base:
 		lsr.l	#8,d2     		;shift address of frame buffer
 		lsr.l	#8,d2
 		move.b	d2,d1			;move shifted value into low byte (video_base_high value)
-		swap	d1				;*video_base_mid now in low byte
+		;swap	d1				;*video_base_mid now in low byte
+		lsl.l	#8,d1
 		lsr.l	#8,d3
 		move.b	d3,d1				;move shifted value into high byte (video_base_mid value)
-		swap	d1					;*video_base_high in low byte / *video_base_mid in high byte
+		;swap	d1					;*video_base_high in low byte / *video_base_mid in high byte
 		
-		add.l	#2,sp
+		movep.w	d1,(a0)
+		
 		move.l	old_ssp(pc),-(sp)	; return to user mode, restoring
 		move.w	#$20,-(sp)		;   system stack pointer
 		trap	#1

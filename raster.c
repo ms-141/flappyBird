@@ -560,4 +560,4 @@ UINT16 *get_video_base()
     *video_base_hi = (UINT8)(addr >> 16);
     *video_base_mid = (UINT8)(addr >> 8);
     Super(old_ssp);
-}*/
+}*/ 
