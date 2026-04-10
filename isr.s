@@ -1,4 +1,12 @@
-    xdef	_vbl_isr
+    xdef _vbl_isr
+    xref _update_music
+    xref _handleBirdMovement
+    xref _handlePipeMovement
+    xref _handleBirdCollision
+    xref _handlePipeRespawn
+    xref _handleScoreIncrease
+    xref _model
+    xref _render_request
 
 _vbl_isr:
     movem.l	d0-d7/a0-a6,-(sp)	; save all registers
