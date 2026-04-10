@@ -79,6 +79,7 @@ void run_game(UINT8 *front_buffer, UINT8 *back_buffer)
 {
     UINT8 *temp_buffer;
     unsigned int quit = 0;
+    int choice;
 
     modelInit(&model);
 
@@ -137,7 +138,7 @@ void run_game(UINT8 *front_buffer, UINT8 *back_buffer)
             {
                 remove_vbl();
 
-                int choice = make_splash_screen(back_buffer);
+                choice = make_splash_screen(back_buffer);
                 if (choice == 1)
                 {
                     modelReset(&model);
