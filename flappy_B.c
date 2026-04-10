@@ -20,14 +20,24 @@ The main game loop is implemented.
 
 #define TIMER_ADDR 0x462
 #define FRAME_ALIGNMENT 256
+#define VBL_VECTOR_ADDR 0x70
 
 long old_ssp;
+Model model;
+volatile UINT16 render_request = 0;
+
+static void (*old_vbl_isr)(void) = 0;
+static int vbl_installed = 0;
+
+void vbl_isr(void);
 
 UINT32 getTime(void);
 UINT8 *alignTo256(UINT8 *raw_buffer);
 void renderBackground(UINT32 *base);
 void run_game(UINT8 *front_buffer, UINT8 *back_buffer);
 int make_splash_screen(UINT8 *base);
+void install_vbl(void);
+void remove_vbl(void);
 
 int main()
 {
@@ -67,9 +77,7 @@ int main()
 /* runs the main game loop */
 void run_game(UINT8 *front_buffer, UINT8 *back_buffer)
 {
-    Model model;
     UINT8 *temp_buffer;
-    UINT32 time_then, time_now, time_elapsed;
     unsigned int quit = 0;
 
     modelInit(&model);
@@ -85,11 +93,12 @@ void run_game(UINT8 *front_buffer, UINT8 *back_buffer)
     front_buffer = back_buffer;
     back_buffer = temp_buffer;
 
-    time_then = getTime();
-
     old_ssp = Super(0);
+    stop_sound();
     start_music();
     Super(old_ssp);
+
+    install_vbl();
 
     while (!quit)
     {
@@ -108,49 +117,59 @@ void run_game(UINT8 *front_buffer, UINT8 *back_buffer)
             /* else the input is not accepted (ignored) */
         }
 
-        time_now = getTime();
-        time_elapsed = time_now - time_then;
-
-        if (time_elapsed > 0)
+        if (render_request)
         {
-            /* synchronous events */
-            handleBirdMovement(&model);
-            handlePipeMovement(&model);
-
-            /* conditional events */
-            handleBirdCollision(&model);
-            handlePipeRespawn(&model);
-            handleScoreIncrease(&model);
+            render_request = 0;
 
             clear_screen((UINT32 *)back_buffer);
             renderBackground((UINT32 *)back_buffer);
             render(&model, back_buffer);
 
-            /* page flip: schedule, wait for vblank, then swap pointers */
+            /* page flip: schedule now, hardware switches on the next VBL */
             set_video_base((UINT16 *)back_buffer);
-            Vsync(); /* wait for the flip to actually happen */
 
             temp_buffer = front_buffer;
             front_buffer = back_buffer;
             back_buffer = temp_buffer;
 
-            old_ssp = Super(0);
-            update_music(time_elapsed);
-            Super(old_ssp);
-
-            time_then = time_now;
-
             /* Show splash screen at game over  */
             if (model.state == GAME_OVER)
             {
+                remove_vbl();
+
                 int choice = make_splash_screen(back_buffer);
                 if (choice == 1)
+                {
                     modelReset(&model);
+
+                    clear_screen((UINT32 *)back_buffer);
+                    renderBackground((UINT32 *)back_buffer);
+                    render(&model, back_buffer);
+
+                    set_video_base((UINT16 *)back_buffer);
+                    Vsync();
+
+                    temp_buffer = front_buffer;
+                    front_buffer = back_buffer;
+                    back_buffer = temp_buffer;
+
+                    old_ssp = Super(0);
+                    stop_sound();
+                    start_music();
+                    Super(old_ssp);
+
+                    render_request = 0;
+                    install_vbl();
+                }
                 else
+                {
                     quit = 1;
+                }
             }
         }
     }
+
+    remove_vbl();
 }
 
 int make_splash_screen(UINT8 *base)
@@ -256,4 +275,35 @@ UINT32 getTime()
 void renderBackground(UINT32 *base)
 {
     plot_horizontal_line(base, GROUND_HEIGHT, 0, SCREEN_WIDTH);
+}
+
+void install_vbl(void)
+{
+    void (**vbl_vector)(void) = (void (**)(void))VBL_VECTOR_ADDR;
+
+    if (vbl_installed)
+        return;
+
+    old_ssp = Super(0);
+    old_vbl_isr = *vbl_vector;
+    *vbl_vector = vbl_isr;
+    Super(old_ssp);
+
+    render_request = 0;
+    vbl_installed = 1;
+}
+
+void remove_vbl(void)
+{
+    void (**vbl_vector)(void) = (void (**)(void))VBL_VECTOR_ADDR;
+
+    if (!vbl_installed)
+        return;
+
+    old_ssp = Super(0);
+    *vbl_vector = old_vbl_isr;
+    Super(old_ssp);
+
+    render_request = 0;
+    vbl_installed = 0;
 }
