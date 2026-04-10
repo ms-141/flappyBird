@@ -1,4 +1,3 @@
-		xdef _set_video_base
 _set_video_base:
 		movem.l	d0-d7/a0-a6,-(sp)
 		clr.l	-(sp)
