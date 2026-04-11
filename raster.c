@@ -96,7 +96,8 @@ void plot_horizontal_line(UINT32 *base, int row, int col, UINT16 length)
     UINT32 mask;
     UINT32 *place;
     UINT32 SOLID = 0xFFFFFFFF;
-    int total_length = col + length;
+    int draw_len = (int)length;
+    int total_length = col + draw_len;
 
     end = (total_length - 1) >> 5; /* where the line ends on the screen */
 
@@ -108,7 +109,7 @@ void plot_horizontal_line(UINT32 *base, int row, int col, UINT16 length)
     /* left is clipped */
     if (col < 0)
     {
-        total_length = col + length; /* so that the total length is representative of the line being off the screen*/
+        draw_len += col;
         col = 0;
     }
     /* right is clipped */
@@ -117,14 +118,15 @@ void plot_horizontal_line(UINT32 *base, int row, int col, UINT16 length)
         return;
     }
 
-    if ((col + length) > SCREEN_WIDTH)
+    if ((col + draw_len) > SCREEN_WIDTH)
     {
-        length = SCREEN_WIDTH - col;
-        total_length = col + length;
+        draw_len = SCREEN_WIDTH - col;
     }
 
-    if (length <= 0)
+    if (draw_len <= 0)
         return;
+
+    total_length = col + draw_len;
 
     end = (total_length - 1) >> 5;
     place = base + row * 20;
@@ -549,7 +551,8 @@ UINT16 *get_video_base()
  OUTPUT: None
 
 */
-/*void set_video_base(UINT16 *address)
+
+void set_video_base(UINT16 *address)
 {
     long old_ssp;
     volatile UINT8 *video_base_hi = (volatile UINT8 *)0xFF8201;
@@ -560,4 +563,4 @@ UINT16 *get_video_base()
     *video_base_hi = (UINT8)(addr >> 16);
     *video_base_mid = (UINT8)(addr >> 8);
     Super(old_ssp);
-}*/ 
+}

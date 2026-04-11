@@ -60,6 +60,10 @@ int main()
 
     srand((unsigned int)getTime());
 
+    /* initialize splash background before first display */
+    clear_screen((UINT32 *)back_buffer);
+    renderBackground((UINT32 *)back_buffer);
+
     /* Load Splash Screen  */
     choice = make_splash_screen(back_buffer);
     if (choice == 1)
@@ -104,10 +108,10 @@ void run_game(UINT8 *front_buffer, UINT8 *back_buffer)
     start_music();
     Super(old_ssp);
 
-    install_vbl();
-
     while (!quit)
     {
+        Vsync();
+
         if (processInput() == 1)
         {
             input = nextInput();
@@ -123,59 +127,54 @@ void run_game(UINT8 *front_buffer, UINT8 *back_buffer)
             /* else the input is not accepted (ignored) */
         }
 
-        if (render_request)
+        update_music(1);
+        handleBirdMovement(&model);
+        handlePipeMovement(&model);
+        handleBirdCollision(&model);
+        handlePipeRespawn(&model);
+        handleScoreIncrease(&model);
+
+        clear_screen((UINT32 *)back_buffer);
+        renderBackground((UINT32 *)back_buffer);
+        render(&model, back_buffer);
+
+        /* page flip: hardware switches on the next VBL */
+        set_video_base((UINT16 *)back_buffer);
+
+        temp_buffer = front_buffer;
+        front_buffer = back_buffer;
+        back_buffer = temp_buffer;
+
+        /* Show splash screen at game over  */
+        if (model.state == GAME_OVER)
         {
-            render_request = 0;
-
-            clear_screen((UINT32 *)back_buffer);
-            renderBackground((UINT32 *)back_buffer);
-            render(&model, back_buffer);
-
-            /* page flip: schedule now, hardware switches on the next VBL */
-            set_video_base((UINT16 *)back_buffer);
-
-            temp_buffer = front_buffer;
-            front_buffer = back_buffer;
-            back_buffer = temp_buffer;
-
-            /* Show splash screen at game over  */
-            if (model.state == GAME_OVER)
+            choice = make_splash_screen(back_buffer);
+            if (choice == 1)
             {
-                remove_vbl();
+                modelReset(&model);
 
-                choice = make_splash_screen(back_buffer);
-                if (choice == 1)
-                {
-                    modelReset(&model);
+                clear_screen((UINT32 *)back_buffer);
+                renderBackground((UINT32 *)back_buffer);
+                render(&model, back_buffer);
 
-                    clear_screen((UINT32 *)back_buffer);
-                    renderBackground((UINT32 *)back_buffer);
-                    render(&model, back_buffer);
+                set_video_base((UINT16 *)back_buffer);
+                Vsync();
 
-                    set_video_base((UINT16 *)back_buffer);
-                    Vsync();
+                temp_buffer = front_buffer;
+                front_buffer = back_buffer;
+                back_buffer = temp_buffer;
 
-                    temp_buffer = front_buffer;
-                    front_buffer = back_buffer;
-                    back_buffer = temp_buffer;
-
-                    old_ssp = Super(0);
-                    stop_sound();
-                    start_music();
-                    Super(old_ssp);
-
-                    render_request = 0;
-                    install_vbl();
-                }
-                else
-                {
-                    quit = 1;
-                }
+                old_ssp = Super(0);
+                stop_sound();
+                start_music();
+                Super(old_ssp);
+            }
+            else
+            {
+                quit = 1;
             }
         }
     }
-
-    remove_vbl();
 }
 
 int make_splash_screen(UINT8 *base)
@@ -286,12 +285,7 @@ void renderBackground(UINT32 *base)
 
 void do_VBL_ISR(void)
 {
-    update_music(1);
-    handleBirdMovement(&model);
-    handlePipeMovement(&model);
-    handleBirdCollision(&model);
-    handlePipeRespawn(&model);
-    handleScoreIncrease(&model);
+    /* Keep ISR minimal: schedule one game tick. */
     render_request = 1;
 }
 
