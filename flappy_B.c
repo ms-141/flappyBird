@@ -75,9 +75,7 @@ int main()
     Vsync(); /* wait for original screen to be restored */
     free(back_buffer_raw);
 
-    old_ssp = Super(0);
     stop_sound();
-    Super(old_ssp);
 
     return 0;
 }
@@ -103,10 +101,8 @@ void run_game(UINT8 *front_buffer, UINT8 *back_buffer)
     front_buffer = back_buffer;
     back_buffer = temp_buffer;
 
-    old_ssp = Super(0);
     stop_sound();
     start_music();
-    Super(old_ssp);
 
     while (!quit)
     {
@@ -164,10 +160,8 @@ void run_game(UINT8 *front_buffer, UINT8 *back_buffer)
                 front_buffer = back_buffer;
                 back_buffer = temp_buffer;
 
-                old_ssp = Super(0);
                 stop_sound();
                 start_music();
-                Super(old_ssp);
             }
             else
             {
@@ -219,18 +213,14 @@ int make_splash_screen(UINT8 *base)
 
     time_then = getTime();
 
-    old_ssp = Super(0);
     start_menu_music();
-    Super(old_ssp);
 
     while (1)
     {
         time_now = getTime();
         time_elapsed = time_now - time_then;
 
-        old_ssp = Super(0);
         update_menu_music(time_elapsed);
-        Super(old_ssp);
 
         time_then = time_now;
 
