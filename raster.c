@@ -488,11 +488,14 @@ void plot_32bit_bitmap(UINT32 *base, int row, int col, const UINT32 *bitmap, UIN
 void plot_character(UINT8 *base, int row, int col, char ch)
 {
     UINT8 glyph[16];
-    UINT8 *font_table;
+    static UINT8 *font_table = 0;
     unsigned int i;
 
-    linea0();
-    font_table = (UINT8 *)V_FNT_AD;
+    if (font_table == 0)
+    {
+        linea0();
+        font_table = (UINT8 *)V_FNT_AD;
+    }
 
     for (i = 0; i < 16; i++)
     {

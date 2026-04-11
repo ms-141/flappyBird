@@ -84,6 +84,7 @@ int main()
 void run_game(UINT8 *front_buffer, UINT8 *back_buffer)
 {
     UINT8 *temp_buffer;
+    UINT32 time_then, time_now, time_elapsed;
     unsigned int quit = 0;
     int choice;
     char input;
@@ -103,10 +104,15 @@ void run_game(UINT8 *front_buffer, UINT8 *back_buffer)
 
     stop_sound();
     start_music();
+    time_then = getTime();
 
     while (!quit)
     {
         Vsync();
+
+        time_now = getTime();
+        time_elapsed = time_now - time_then;
+        time_then = time_now;
 
         if (processInput() == 1)
         {
@@ -123,7 +129,7 @@ void run_game(UINT8 *front_buffer, UINT8 *back_buffer)
             /* else the input is not accepted (ignored) */
         }
 
-        update_music(1);
+        update_music(time_elapsed);
         handleBirdMovement(&model);
         handlePipeMovement(&model);
         handleBirdCollision(&model);
@@ -162,6 +168,7 @@ void run_game(UINT8 *front_buffer, UINT8 *back_buffer)
 
                 stop_sound();
                 start_music();
+                time_then = getTime();
             }
             else
             {

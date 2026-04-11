@@ -16,6 +16,7 @@
 
 volatile char *PSG_reg_select = 0xFF8800;
 volatile char *PSG_reg_write = 0xFF8802;
+static UINT8 mixer_state = 0x3F; /* 1 bits disable all tone/noise channels */
 
 void write_psg(int reg, UINT8 val)
 {
@@ -73,7 +74,7 @@ void set_volume(int channel, int volume)
 
 void enable_channel(int channel, int tone_on, int noise_on)
 {
-    UINT8 mixer, tone_bit, noise_bit;
+    UINT8 tone_bit, noise_bit;
 
     if (channel < 0 || channel > 2)
         return;
@@ -82,26 +83,26 @@ void enable_channel(int channel, int tone_on, int noise_on)
         (noise_on != 0 && noise_on != 1))
         return;
 
-    mixer = read_psg(7); /* read current mixer settings */
     tone_bit = 1 << channel;
     noise_bit = 1 << (channel + 3);
 
     if (tone_on)
-        mixer &= ~tone_bit; /* clear bit to enable tone (0 = tone enabled) */
+        mixer_state &= ~tone_bit; /* clear bit to enable tone (0 = tone enabled) */
     else
-        mixer |= tone_bit; /* set bit to disable tone (1 = tone disabled)*/
+        mixer_state |= tone_bit; /* set bit to disable tone (1 = tone disabled)*/
 
     if (noise_on)
-        mixer &= ~noise_bit; /* clear bit to enable noise */
+        mixer_state &= ~noise_bit; /* clear bit to enable noise */
     else
-        mixer |= noise_bit; /* set bit to disable noise */
+        mixer_state |= noise_bit; /* set bit to disable noise */
 
-    write_psg(7, mixer); /* write updated mixer settings back to PSG */
+    write_psg(7, mixer_state); /* write updated mixer settings back to PSG */
 }
 
 void stop_sound()
 {
-    write_psg(7, 0x3F); /* set all bits in mixer to disable all channels */
+    mixer_state = 0x3F;
+    write_psg(7, mixer_state); /* set all bits in mixer to disable all channels */
 
     write_psg(8, 0);
     write_psg(9, 0);
