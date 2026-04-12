@@ -555,7 +555,7 @@ UINT16 *get_video_base()
 
 */
 
-void set_video_base(UINT16 *address)
+/* void set_video_base(UINT16 *address)
 {
     long old_ssp;
     volatile UINT8 *video_base_hi = (volatile UINT8 *)0xFF8201;
@@ -566,4 +566,4 @@ void set_video_base(UINT16 *address)
     *video_base_hi = (UINT8)(addr >> 16);
     *video_base_mid = (UINT8)(addr >> 8);
     Super(old_ssp);
-}
+} */
