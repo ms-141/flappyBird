@@ -62,7 +62,7 @@ int main()
 
     /* initialize splash background before first display */
     clear_screen((UINT32 *)back_buffer);
-    renderBackground((UINT32 *)back_buffer);
+    
 
     /* Load Splash Screen  */
     choice = make_splash_screen(back_buffer);
