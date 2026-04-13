@@ -23,28 +23,49 @@ The main game loop is implemented.
 #define VBL_VECTOR_NUM 28
 #define IKBD_VECTOR_NUM 70
 
+/* IKBD make-code scancodes (bit 7 = 0 = key press; bit 7 = 1 = break code) */
+#define SC_SPACE 0x39
+#define SC_Q 0x10
+#define SC_1 0x02
+
+/* MC6850 ACIA control register values (keyboard ACIA at 0xFFFC00)
+   Bits [1:0] = 10  -> divide clock by 64  (7812.5 baud)
+   Bits [4:2] = 101 -> 8 data bits, no parity, 1 stop bit (8N1)
+   Bits [6:5] = 00  -> RTS low, Tx interrupt disabled
+   Bit  7    = 1/0 -> Rx interrupt enabled / disabled                    */
+#define IKBD_CTRL_RX_ENABLED 0x96  /* full TOS default: Rx IRQ on  */
+#define IKBD_CTRL_RX_DISABLED 0x16 /* polling mode   : Rx IRQ off  */
+
+/* MC6850 ACIA status register bit masks */
+#define IKBD_STATUS_RDRF 0x01 /* Receive Data Register Full */
+
+/* MFP In-Service Register B: must clear bit 6 (ACIA) after each ISR
+   so the MFP will fire the interrupt again next time */
+#define MFP_ISRB ((volatile UINT8 *)0xFFFA11)
+#define MFP_ACIA_ISR_CLR 0xBF /* all bits 1 except bit 6 */
+typedef UINT8 SCANCODE;
+
 typedef void (*Vector)(void);
 
 long old_ssp;
 Model model;
-unsigned char prior_state;
-unsigned char data;
+
+/* Scancode ring buffer shared between ISR (writer) and main loop (reader) */
+#define IKBD_BUF_SIZE 16
+volatile SCANCODE ikbd_buf[IKBD_BUF_SIZE];
+volatile int ikbd_head = 0; /* ISR writes here  */
+volatile int ikbd_tail = 0; /* main loop reads here */
 
 volatile UINT16 render_request = 0;
-volatile UINT16 input_request = 0;
 
 static Vector old_vbl_isr = 0;
 static int vbl_installed = 0;
 static Vector old_IKBD_isr = 0;
 static int IKBD_installed = 0;
 
-
-volatile UINT8 * const IKBD_control = 0xFFFC00;
-volatile const UINT8 * const IKBD_status = 0xFFFC00;
-volatile const SCANCODE * const IKBD_RDR = 0xFFFC02;
-
-unsigned char prior_state;
-unsigned char data;
+volatile UINT8 *const IKBD_control = (UINT8 *)0xFFFC00;
+volatile const UINT8 *const IKBD_status = (const UINT8 *)0xFFFC00;
+volatile const SCANCODE *const IKBD_RDR = (const SCANCODE *)0xFFFC02;
 
 void vbl_isr(void);
 void ikbd_isr(void);
@@ -59,6 +80,8 @@ void do_VBL_ISR(void);
 void install_vbl(void);
 void remove_vbl(void);
 void do_IKBD_ISR(void);
+void install_IKBD(void);
+void remove_IKBD(void);
 
 int main()
 {
@@ -81,12 +104,14 @@ int main()
     clear_screen((UINT32 *)back_buffer);
     renderBackground((UINT32 *)back_buffer);
 
-    /* Load Splash Screen  */
+    /* Install IKBD ISR then load splash screen */
+    install_IKBD();
     choice = make_splash_screen(back_buffer);
     if (choice == 1)
     {
         run_game(front_buffer, back_buffer);
     }
+    remove_IKBD();
 
     set_video_base((UINT16 *)original_front);
     Vsync(); /* wait for original screen to be restored */
@@ -104,7 +129,6 @@ void run_game(UINT8 *front_buffer, UINT8 *back_buffer)
     UINT32 time_then, time_now, time_elapsed;
     unsigned int quit = 0;
     int choice;
-    char input;
 
     modelInit(&model);
 
@@ -131,19 +155,22 @@ void run_game(UINT8 *front_buffer, UINT8 *back_buffer)
         time_elapsed = time_now - time_then;
         time_then = time_now;
 
-        if (processInput() == 1)
+        while (ikbd_tail != ikbd_head)
         {
-            input = nextInput();
+            SCANCODE scancode = ikbd_buf[ikbd_tail];
+            ikbd_tail = (ikbd_tail + 1) % IKBD_BUF_SIZE;
 
-            if (input == 'q')
+            if (!(scancode & 0x80)) /* only handle make codes (key press) */
             {
-                model.state = GAME_OVER;
+                if (scancode == SC_Q)
+                {
+                    model.state = GAME_OVER;
+                }
+                else if (scancode == SC_SPACE && model.state == PLAYING)
+                {
+                    handleJump(&model);
+                }
             }
-            else if (input == ' ' && model.state == PLAYING)
-            {
-                handleJump(&model);
-            }
-            /* else the input is not accepted (ignored) */
         }
 
         update_music(time_elapsed);
@@ -198,7 +225,7 @@ void run_game(UINT8 *front_buffer, UINT8 *back_buffer)
 int make_splash_screen(UINT8 *base)
 {
     UINT32 time_then, time_now, time_elapsed;
-    char input;
+    SCANCODE scancode;
 
     /* render a rectangle, everything within might have to be cleared, two options: 1p and quit */
     /* clear region for splash screen */
@@ -248,12 +275,13 @@ int make_splash_screen(UINT8 *base)
 
         time_then = time_now;
 
-        if (processInput() == 1)
+        while (ikbd_tail != ikbd_head)
         {
-            input = nextInput();
-            if (input == '1')
+            scancode = ikbd_buf[ikbd_tail];
+            ikbd_tail = (ikbd_tail + 1) % IKBD_BUF_SIZE;
+            if (scancode == SC_1)
                 return 1;
-            if (input == 'q')
+            if (scancode == SC_Q)
                 return 0;
         }
     }
@@ -338,39 +366,52 @@ Vector install_vector(int num, Vector vector)
     return orig;
 }
 
-void do_IKBD_ISR(void) {
-    prior_state = 0x96;
-    *IKBD_control = prior_state & 0x7F;
+void do_IKBD_ISR(void)
+{
+    int next = (ikbd_head + 1) % IKBD_BUF_SIZE;
+    if (next != ikbd_tail) /* drop if buffer full */
+        ikbd_buf[ikbd_head] = *IKBD_RDR;
+    else
+        (void)*IKBD_RDR; /* must still read RDR to clear RDRF */
+    ikbd_head = next;
 
-    while (1) {
-        if (*IKBD_status & 0x01) {
-            data = *IKBD_RDR;
-        }
-
-    *IKBD_control = prior_state;
-    input_request = 1;
+    /* Clear MFP in-service bit so future interrupts can fire */
+    *MFP_ISRB = MFP_ACIA_ISR_CLR;
 }
 
-void install_IKBD(void) {
+void install_IKBD(void)
+{
     if (IKBD_installed)
         return;
 
+    /* 0xFFFC00 is in the protected I/O region: must be in supervisor mode */
+    old_ssp = Super(0);
+    /* Write full 8-bit value: ÷64, 8N1, Rx IRQ enabled, Tx IRQ disabled */
+    *IKBD_control = IKBD_CTRL_RX_ENABLED;
+    Super(old_ssp);
+
     old_IKBD_isr = install_vector(IKBD_VECTOR_NUM, ikbd_isr);
-    input_request = 0;
+    ikbd_head = ikbd_tail = 0; /* flush buffer */
     IKBD_installed = 1;
-
-
-
 }
 
-
-
-void remove_IKBD(void) {
-    if (!vbl_installed)
+void remove_IKBD(void)
+{
+    if (!IKBD_installed)
         return;
 
-    install_vector(VBL_VECTOR_NUM, old_vbl_isr);
+    /* Disable Rx interrupt before restoring old vector (write full 8-bit value) */
+    old_ssp = Super(0);
+    *IKBD_control = IKBD_CTRL_RX_DISABLED;
+    Super(old_ssp);
 
-    render_request = 0;
-    vbl_installed = 0;
+    install_vector(IKBD_VECTOR_NUM, old_IKBD_isr);
+
+    /* Restore TOS default: Rx interrupt enabled */
+    old_ssp = Super(0);
+    *IKBD_control = IKBD_CTRL_RX_ENABLED;
+    Super(old_ssp);
+
+    ikbd_head = ikbd_tail = 0;
+    IKBD_installed = 0;
 }
