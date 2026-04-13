@@ -105,6 +105,7 @@ void remove_vbl(void);
 void do_IKBD_ISR(void);
 void install_IKBD(void);
 void remove_IKBD(void);
+static void xor_cursor(UINT8 *base, int row, int col);
 void erase_cursor(UINT8 *base);
 
 int main()
@@ -248,7 +249,6 @@ void run_game(UINT8 *front_buffer, UINT8 *back_buffer)
 
 int make_splash_screen(UINT8 *base)
 {
-    UINT32 time_then, time_now, time_elapsed;
     SCANCODE scancode;
     int mx, my, left_was_down, left_now;
 
@@ -291,10 +291,10 @@ int make_splash_screen(UINT8 *base)
     splash_base = base;
     mouse_prev_x = mouse_x;
     mouse_prev_y = mouse_y;
+    xor_cursor(base, mouse_y, mouse_x); /* draw cursor before VBL starts */
     set_mouse_visible(1);
     install_vbl();
 
-    time_then = getTime();
     start_menu_music();
     left_was_down = 0;
 
@@ -305,10 +305,7 @@ int make_splash_screen(UINT8 *base)
             ;
         render_request = 0;
 
-        time_now = getTime();
-        time_elapsed = time_now - time_then;
-        update_menu_music(time_elapsed);
-        time_then = time_now;
+        update_menu_music(1); /* 1 tick per VBL; getTime() is frozen since we own vector 28 */
 
         /* Keyboard shortcuts still work */
         while (ikbd_tail != ikbd_head)
