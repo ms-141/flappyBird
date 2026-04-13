@@ -119,7 +119,6 @@ int main()
 
     /* initialize splash background before first display */
     clear_screen((UINT32 *)back_buffer);
-    renderBackground((UINT32 *)back_buffer);
 
     /* Install IKBD ISR then load splash screen */
     install_IKBD();
