@@ -56,6 +56,21 @@ volatile SCANCODE ikbd_buf[IKBD_BUF_SIZE];
 volatile int ikbd_head = 0; /* ISR writes here  */
 volatile int ikbd_tail = 0; /* main loop reads here */
 
+/* Mouse state maintained by the ISR */
+volatile int mouse_x = 320;       /* absolute x position (0..639) */
+volatile int mouse_y = 200;       /* absolute y position (0..399) */
+volatile UINT8 mouse_buttons = 0; /* bit 0 = left, bit 1 = right */
+
+/* Mouse pointer visibility flag: set by splash screen, cleared during gameplay */
+volatile int mouse_visible = 0;
+
+/* Saved pixel row under the cursor (XOR restore approach) */
+volatile int mouse_prev_x = 320;
+volatile int mouse_prev_y = 200;
+
+/* Splash buffer pointer used by do_VBL_ISR to draw the cursor */
+static UINT8 *splash_base = 0;
+
 volatile UINT16 render_request = 0;
 
 static Vector old_vbl_isr = 0;
@@ -63,6 +78,14 @@ static int vbl_installed = 0;
 static Vector old_IKBD_isr = 0;
 static int IKBD_installed = 0;
 
+/* Mouse packet header byte has top 6 bits = 111110, value always >= 0xF8 */
+#define MOUSE_HEADER_MIN 0xF8
+#define MOUSE_LEFT_BTN 0x02
+#define MOUSE_RIGHT_BTN 0x01
+
+/* ISR packet-reassembly state (0 = waiting for header, 1 = dx, 2 = dy) */
+static volatile int mouse_state = 0;
+static volatile UINT8 mouse_header = 0;
 volatile UINT8 *const IKBD_control = (UINT8 *)0xFFFC00;
 volatile const UINT8 *const IKBD_status = (const UINT8 *)0xFFFC00;
 volatile const SCANCODE *const IKBD_RDR = (const SCANCODE *)0xFFFC02;
@@ -82,6 +105,7 @@ void remove_vbl(void);
 void do_IKBD_ISR(void);
 void install_IKBD(void);
 void remove_IKBD(void);
+void erase_cursor(UINT8 *base);
 
 int main()
 {
@@ -226,13 +250,16 @@ int make_splash_screen(UINT8 *base)
 {
     UINT32 time_then, time_now, time_elapsed;
     SCANCODE scancode;
+    int mx, my, left_was_down, left_now;
 
-    /* render a rectangle, everything within might have to be cleared, two options: 1p and quit */
-    /* clear region for splash screen */
+    /* Button regions (row_top, row_bot, col_left, col_right) */
+    const int BTN1_TOP = 170, BTN1_BOT = 195, BTN1_LEFT = 260, BTN1_RIGHT = 395;
+    const int BTNQ_TOP = 200, BTNQ_BOT = 225, BTNQ_LEFT = 260, BTNQ_RIGHT = 395;
+
     /* clear only the splash screen region, preserving the background */
     clear_region((UINT32 *)base, 125, 170, 150, 300);
 
-    /* make rectangle (4 lines) */
+    /* outer border */
     plot_horizontal_line((UINT32 *)base, 125, 170, 300);
     plot_horizontal_line((UINT32 *)base, 275, 170, 300);
     plot_vertical_line((UINT32 *)base, 125, 170, 150);
@@ -241,49 +268,94 @@ int make_splash_screen(UINT8 *base)
     /* title */
     plot_string((UINT8 *)base, 140, 285, "FLAPPY BIRD");
 
-    /* write '1 - One Player' and 'Q - Quit Game'*/
+    /* button labels */
     plot_string((UINT8 *)base, 175, 270, "1 - One Player");
     plot_string((UINT8 *)base, 205, 270, "Q - Quit Game");
 
-    /* plot_horizontal_line(UINT32 *base, int row, int col, UINT16 length) */
-    plot_horizontal_line((UINT32 *)base, 170, 260, 135);
-    plot_horizontal_line((UINT32 *)base, 195, 260, 135);
+    /* "1 Player" button outline */
+    plot_horizontal_line((UINT32 *)base, BTN1_TOP, BTN1_LEFT, BTN1_RIGHT - BTN1_LEFT);
+    plot_horizontal_line((UINT32 *)base, BTN1_BOT, BTN1_LEFT, BTN1_RIGHT - BTN1_LEFT);
+    plot_vertical_line((UINT32 *)base, BTN1_TOP, BTN1_LEFT, BTN1_BOT - BTN1_TOP);
+    plot_vertical_line((UINT32 *)base, BTN1_TOP, BTN1_RIGHT, BTN1_BOT - BTN1_TOP);
 
-    plot_horizontal_line((UINT32 *)base, 200, 260, 135);
-    plot_horizontal_line((UINT32 *)base, 225, 260, 135);
+    /* "Quit" button outline */
+    plot_horizontal_line((UINT32 *)base, BTNQ_TOP, BTNQ_LEFT, BTNQ_RIGHT - BTNQ_LEFT);
+    plot_horizontal_line((UINT32 *)base, BTNQ_BOT, BTNQ_LEFT, BTNQ_RIGHT - BTNQ_LEFT);
+    plot_vertical_line((UINT32 *)base, BTNQ_TOP, BTNQ_LEFT, BTNQ_BOT - BTNQ_TOP);
+    plot_vertical_line((UINT32 *)base, BTNQ_TOP, BTNQ_RIGHT, BTNQ_BOT - BTNQ_TOP);
 
-    plot_vertical_line((UINT32 *)base, 170, 260, 25);
-    plot_vertical_line((UINT32 *)base, 170, 395, 25);
-
-    plot_vertical_line((UINT32 *)base, 200, 260, 25);
-    plot_vertical_line((UINT32 *)base, 200, 395, 25);
-
-    /* splash screen is created. display it, then wait for user input */
+    /* Display the splash screen and start the VBL + cursor */
     set_video_base((UINT16 *)base);
     Vsync();
 
-    time_then = getTime();
+    splash_base = base;
+    mouse_prev_x = mouse_x;
+    mouse_prev_y = mouse_y;
+    set_mouse_visible(1);
+    install_vbl();
 
+    time_then = getTime();
     start_menu_music();
+    left_was_down = 0;
 
     while (1)
     {
+        /* Spin until our VBL fires; Vsync() would hang since we replaced vector 28 */
+        while (!render_request)
+            ;
+        render_request = 0;
+
         time_now = getTime();
         time_elapsed = time_now - time_then;
-
         update_menu_music(time_elapsed);
-
         time_then = time_now;
 
+        /* Keyboard shortcuts still work */
         while (ikbd_tail != ikbd_head)
         {
             scancode = ikbd_buf[ikbd_tail];
             ikbd_tail = (ikbd_tail + 1) % IKBD_BUF_SIZE;
             if (scancode == SC_1)
+            {
+                erase_cursor(base);
+                remove_vbl();
+                set_mouse_visible(0);
                 return 1;
+            }
             if (scancode == SC_Q)
+            {
+                erase_cursor(base);
+                remove_vbl();
+                set_mouse_visible(0);
                 return 0;
+            }
         }
+
+        /* Mouse click detection: fire on button release inside a button */
+        left_now = get_mouse_left();
+        if (!left_now && left_was_down)
+        {
+            mx = get_mouse_x();
+            my = get_mouse_y();
+
+            if (mx >= BTN1_LEFT && mx <= BTN1_RIGHT &&
+                my >= BTN1_TOP && my <= BTN1_BOT)
+            {
+                erase_cursor(base);
+                remove_vbl();
+                set_mouse_visible(0);
+                return 1;
+            }
+            if (mx >= BTNQ_LEFT && mx <= BTNQ_RIGHT &&
+                my >= BTNQ_TOP && my <= BTNQ_BOT)
+            {
+                erase_cursor(base);
+                remove_vbl();
+                set_mouse_visible(0);
+                return 0;
+            }
+        }
+        left_was_down = left_now;
     }
 }
 
@@ -325,10 +397,59 @@ void renderBackground(UINT32 *base)
     plot_horizontal_line(base, GROUND_HEIGHT, 0, SCREEN_WIDTH);
 }
 
+/* 8x8 XOR arrow cursor bitmap (MSB = leftmost pixel) */
+static const UINT8 cursor_bitmap[8] = {
+    0xFF, /* ######## */
+    0xFE, /* ####### */
+    0xFC, /* ######  */
+    0xF8, /* #####   */
+    0xF0, /* ####    */
+    0xE0, /* ###     */
+    0xC0, /* ##      */
+    0x80  /* #       */
+};
+
+static void xor_cursor(UINT8 *base, int row, int col)
+{
+    int r;
+    for (r = 0; r < 8; r++)
+    {
+        int byte_col = col / 8;
+        int bit_shift = col % 8;
+        UINT8 *addr;
+
+        if (row + r < 0 || row + r >= SCREEN_HEIGHT)
+            continue;
+
+        addr = base + (row + r) * BYTES_PER_ROW + byte_col;
+
+        /* XOR first byte */
+        *addr ^= cursor_bitmap[r] >> bit_shift;
+
+        /* XOR overflow into next byte if cursor straddles a byte boundary */
+        if (bit_shift > 0 && byte_col + 1 < BYTES_PER_ROW)
+            *(addr + 1) ^= cursor_bitmap[r] << (8 - bit_shift);
+    }
+}
+
+/* Erase cursor from screen before disabling the VBL ISR */
+void erase_cursor(UINT8 *base)
+{
+    xor_cursor(base, mouse_prev_y, mouse_prev_x);
+}
+
 void do_VBL_ISR(void)
 {
-    /* Keep ISR minimal: schedule one game tick. */
     render_request = 1;
+
+    if (mouse_visible && splash_base)
+    {
+        /* Erase cursor at previous position, draw at current position */
+        xor_cursor(splash_base, mouse_prev_y, mouse_prev_x);
+        xor_cursor(splash_base, mouse_y, mouse_x);
+        mouse_prev_x = mouse_x;
+        mouse_prev_y = mouse_y;
+    }
 }
 
 void install_vbl(void)
@@ -368,12 +489,48 @@ Vector install_vector(int num, Vector vector)
 
 void do_IKBD_ISR(void)
 {
-    int next = (ikbd_head + 1) % IKBD_BUF_SIZE;
-    if (next != ikbd_tail) /* drop if buffer full */
-        ikbd_buf[ikbd_head] = *IKBD_RDR;
+    UINT8 byte = *IKBD_RDR;
+
+    if (mouse_state == 0)
+    {
+        if (byte >= MOUSE_HEADER_MIN)
+        {
+            /* First byte of a 3-byte mouse packet */
+            mouse_header = byte;
+            mouse_state = 1;
+        }
+        else
+        {
+            /* Keyboard scancode: enqueue it */
+            int next = (ikbd_head + 1) % IKBD_BUF_SIZE;
+            if (next != ikbd_tail)
+                ikbd_buf[ikbd_head] = byte;
+            ikbd_head = next;
+        }
+    }
+    else if (mouse_state == 1)
+    {
+        /* Delta X (signed) */
+        int new_x = mouse_x + (signed char)byte;
+        if (new_x < 0)
+            new_x = 0;
+        if (new_x >= SCREEN_WIDTH)
+            new_x = SCREEN_WIDTH - 1;
+        mouse_x = new_x;
+        mouse_state = 2;
+    }
     else
-        (void)*IKBD_RDR; /* must still read RDR to clear RDRF */
-    ikbd_head = next;
+    {
+        /* Delta Y (signed) */
+        int new_y = mouse_y + (signed char)byte;
+        if (new_y < 0)
+            new_y = 0;
+        if (new_y >= SCREEN_HEIGHT)
+            new_y = SCREEN_HEIGHT - 1;
+        mouse_y = new_y;
+        mouse_buttons = mouse_header & (MOUSE_LEFT_BTN | MOUSE_RIGHT_BTN);
+        mouse_state = 0;
+    }
 
     /* Clear MFP in-service bit so future interrupts can fire */
     *MFP_ISRB = MFP_ACIA_ISR_CLR;
