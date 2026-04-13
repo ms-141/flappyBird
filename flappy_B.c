@@ -21,17 +21,33 @@ The main game loop is implemented.
 #define TIMER_ADDR 0x462
 #define FRAME_ALIGNMENT 256
 #define VBL_VECTOR_NUM 28
+#define IKBD_VECTOR_NUM 70
 
 typedef void (*Vector)(void);
 
 long old_ssp;
 Model model;
+unsigned char prior_state;
+unsigned char data;
+
 volatile UINT16 render_request = 0;
+volatile UINT16 input_request = 0;
 
 static Vector old_vbl_isr = 0;
 static int vbl_installed = 0;
+static Vector old_IKBD_isr = 0;
+static int IKBD_installed = 0;
+
+
+volatile UINT8 * const IKBD_control = 0xFFFC00;
+volatile const UINT8 * const IKBD_status = 0xFFFC00;
+volatile const SCANCODE * const IKBD_RDR = 0xFFFC02;
+
+unsigned char prior_state;
+unsigned char data;
 
 void vbl_isr(void);
+void ikbd_isr(void);
 
 UINT32 getTime(void);
 UINT8 *alignTo256(UINT8 *raw_buffer);
@@ -42,6 +58,7 @@ Vector install_vector(int num, Vector vector);
 void do_VBL_ISR(void);
 void install_vbl(void);
 void remove_vbl(void);
+void do_IKBD_ISR(void);
 
 int main()
 {
@@ -319,4 +336,41 @@ Vector install_vector(int num, Vector vector)
     Super(old_ssp);
 
     return orig;
+}
+
+void do_IKBD_ISR(void) {
+    prior_state = 0x96;
+    *IKBD_control = prior_state & 0x7F;
+
+    while (1) {
+        if (*IKBD_status & 0x01) {
+            data = *IKBD_RDR;
+        }
+
+    *IKBD_control = prior_state;
+    input_request = 1;
+}
+
+void install_IKBD(void) {
+    if (IKBD_installed)
+        return;
+
+    old_IKBD_isr = install_vector(IKBD_VECTOR_NUM, ikbd_isr);
+    input_request = 0;
+    IKBD_installed = 1;
+
+
+
+}
+
+
+
+void remove_IKBD(void) {
+    if (!vbl_installed)
+        return;
+
+    install_vector(VBL_VECTOR_NUM, old_vbl_isr);
+
+    render_request = 0;
+    vbl_installed = 0;
 }

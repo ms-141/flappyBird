@@ -3,4 +3,7 @@
 		
 _ikbd_isr:
 		movem.l	d0-d7/a0-a7,-(sp)
+		jsr	do_VBL_ISR
+		movem.l	(sp)+,d0-d7/a0-a6
+    	rte
 		
