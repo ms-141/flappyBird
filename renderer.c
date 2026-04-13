@@ -17,6 +17,7 @@
  * cover the score and make it impossible to see.
  */
 
+#include <stdio.h>
 #include "renderer.h"
 
 UINT16 bird_bitmap[16] = {
@@ -90,6 +91,7 @@ void render_score(Score *score, UINT8 *base)
     /* Rebuild string only when value changes; still draw every frame. */
     if (score->curr_score != score->prev_score)
     {
+        /* format score into sstring */
         sprintf(score_str, "Score: %u", score->curr_score);
         score->prev_score = score->curr_score;
     }

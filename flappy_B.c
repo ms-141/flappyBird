@@ -18,7 +18,6 @@ The main game loop is implemented.
 #include "music.h"
 #include "effects.h"
 
-#define TIMER_ADDR 0x462
 #define FRAME_ALIGNMENT 256
 #define VBL_VECTOR_NUM 28
 #define IKBD_VECTOR_NUM 70
@@ -56,14 +55,6 @@ volatile SCANCODE ikbd_buf[IKBD_BUF_SIZE];
 volatile int ikbd_head = 0; /* ISR writes here  */
 volatile int ikbd_tail = 0; /* main loop reads here */
 
-/* Mouse state maintained by the ISR */
-volatile int mouse_x = 320;       /* absolute x position (0..639) */
-volatile int mouse_y = 200;       /* absolute y position (0..399) */
-volatile UINT8 mouse_buttons = 0; /* bit 0 = left, bit 1 = right */
-
-/* Mouse pointer visibility flag: set by splash screen, cleared during gameplay */
-volatile int mouse_visible = 0;
-
 /* Saved pixel row under the cursor (XOR restore approach) */
 volatile int mouse_prev_x = 320;
 volatile int mouse_prev_y = 200;
@@ -72,6 +63,8 @@ volatile int mouse_prev_y = 200;
 static UINT8 *splash_base = 0;
 
 volatile UINT16 render_request = 0;
+volatile int game_vbl_active = 0;
+volatile UINT16 music_ticks_pending = 0;
 
 static Vector old_vbl_isr = 0;
 static int vbl_installed = 0;
@@ -93,7 +86,6 @@ volatile const SCANCODE *const IKBD_RDR = (const SCANCODE *)0xFFFC02;
 void vbl_isr(void);
 void ikbd_isr(void);
 
-UINT32 getTime(void);
 UINT8 *alignTo256(UINT8 *raw_buffer);
 void renderBackground(UINT32 *base);
 void run_game(UINT8 *front_buffer, UINT8 *back_buffer);
@@ -123,7 +115,7 @@ int main()
     }
     back_buffer = alignTo256(back_buffer_raw);
 
-    srand((unsigned int)getTime());
+    srand(42);
 
     /* initialize splash background before first display */
     clear_screen((UINT32 *)back_buffer);
@@ -151,7 +143,6 @@ int main()
 void run_game(UINT8 *front_buffer, UINT8 *back_buffer)
 {
     UINT8 *temp_buffer;
-    UINT32 time_then, time_now, time_elapsed;
     unsigned int quit = 0;
     int choice;
 
@@ -170,16 +161,14 @@ void run_game(UINT8 *front_buffer, UINT8 *back_buffer)
 
     stop_sound();
     start_music();
-    time_then = getTime();
+
+    splash_base = NULL; /* disable cursor drawing; game doesn't use mouse */
+    music_ticks_pending = 0;
+    game_vbl_active = 1;
+    install_vbl();
 
     while (!quit)
     {
-        Vsync();
-
-        time_now = getTime();
-        time_elapsed = time_now - time_then;
-        time_then = time_now;
-
         while (ikbd_tail != ikbd_head)
         {
             SCANCODE scancode = ikbd_buf[ikbd_tail];
@@ -198,12 +187,16 @@ void run_game(UINT8 *front_buffer, UINT8 *back_buffer)
             }
         }
 
-        update_music(time_elapsed);
-        handleBirdMovement(&model);
-        handlePipeMovement(&model);
-        handleBirdCollision(&model);
-        handlePipeRespawn(&model);
-        handleScoreIncrease(&model);
+        if (!render_request)
+            continue;
+        render_request = 0;
+
+        /* keep music speed steady */
+        while (music_ticks_pending > 0)
+        {
+            update_music(1);
+            music_ticks_pending--;
+        }
 
         clear_screen((UINT32 *)back_buffer);
         renderBackground((UINT32 *)back_buffer);
@@ -219,6 +212,10 @@ void run_game(UINT8 *front_buffer, UINT8 *back_buffer)
         /* Show splash screen at game over  */
         if (model.state == GAME_OVER)
         {
+            play_game_over_effect();
+            game_vbl_active = 0;
+            remove_vbl();
+
             choice = make_splash_screen(back_buffer);
             if (choice == 1)
             {
@@ -237,7 +234,10 @@ void run_game(UINT8 *front_buffer, UINT8 *back_buffer)
 
                 stop_sound();
                 start_music();
-                time_then = getTime();
+
+                music_ticks_pending = 0;
+                game_vbl_active = 1;
+                install_vbl();
             }
             else
             {
@@ -245,6 +245,9 @@ void run_game(UINT8 *front_buffer, UINT8 *back_buffer)
             }
         }
     }
+
+    game_vbl_active = 0;
+    remove_vbl();
 }
 
 int make_splash_screen(UINT8 *base)
@@ -289,9 +292,9 @@ int make_splash_screen(UINT8 *base)
     Vsync();
 
     splash_base = base;
-    mouse_prev_x = mouse_x;
-    mouse_prev_y = mouse_y;
-    xor_cursor(base, mouse_y, mouse_x); /* draw cursor before VBL starts */
+    mouse_prev_x = get_mouse_x();
+    mouse_prev_y = get_mouse_y();
+    xor_cursor(base, get_mouse_y(), get_mouse_x()); /* draw cursor before VBL starts */
     set_mouse_visible(1);
     install_vbl();
 
@@ -377,18 +380,6 @@ UINT8 *alignTo256(UINT8 *raw_buffer)
     return (UINT8 *)address;
 }
 
-UINT32 getTime()
-{
-    volatile UINT32 *timer = (volatile UINT32 *)TIMER_ADDR;
-    UINT32 time;
-
-    old_ssp = Super(0); /* enter supervisor mode to read system variable */
-    time = *timer;
-    Super(old_ssp); /* exit supervisor mode */
-
-    return time;
-}
-
 void renderBackground(UINT32 *base)
 {
     plot_horizontal_line(base, GROUND_HEIGHT, 0, SCREEN_WIDTH);
@@ -437,10 +428,23 @@ void erase_cursor(UINT8 *base)
 
 void do_VBL_ISR(void)
 {
+    if (game_vbl_active)
+    {
+        music_ticks_pending++;
+        handleBirdMovement(&model);
+        handlePipeMovement(&model);
+        handleBirdCollision(&model);
+        handlePipeRespawn(&model);
+        handleScoreIncrease(&model);
+    }
+
     render_request = 1;
 
-    if (mouse_visible && splash_base)
+    if (get_mouse_visible() && splash_base)
     {
+        int mouse_x = get_mouse_x();
+        int mouse_y = get_mouse_y();
+
         /* Erase cursor at previous position, draw at current position */
         xor_cursor(splash_base, mouse_prev_y, mouse_prev_x);
         xor_cursor(splash_base, mouse_y, mouse_x);
@@ -508,24 +512,14 @@ void do_IKBD_ISR(void)
     else if (mouse_state == 1)
     {
         /* Delta X (signed) */
-        int new_x = mouse_x + (signed char)byte;
-        if (new_x < 0)
-            new_x = 0;
-        if (new_x >= SCREEN_WIDTH)
-            new_x = SCREEN_WIDTH - 1;
-        mouse_x = new_x;
+        move_mouse_x((signed char)byte);
         mouse_state = 2;
     }
     else
     {
         /* Delta Y (signed) */
-        int new_y = mouse_y + (signed char)byte;
-        if (new_y < 0)
-            new_y = 0;
-        if (new_y >= SCREEN_HEIGHT)
-            new_y = SCREEN_HEIGHT - 1;
-        mouse_y = new_y;
-        mouse_buttons = mouse_header & (MOUSE_LEFT_BTN | MOUSE_RIGHT_BTN);
+        move_mouse_y((signed char)byte);
+        set_mouse_buttons(mouse_header & (MOUSE_LEFT_BTN | MOUSE_RIGHT_BTN));
         mouse_state = 0;
     }
 

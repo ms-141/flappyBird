@@ -19,17 +19,17 @@
 
 #define PIPE_WIDTH 32
 #define PIPE_GAP_SIZE 100
-#define PIPE_MOVE_SPEED 6
+#define PIPE_MOVE_SPEED 1
 #define PIPE_MIN_Y 40
 #define PIPE_MAX_Y 220
 
 typedef struct
 {
-    int x;          /* each set of pipes has a continuously changing horizontal pos. */
-    int prev_x;     /* the previous horizontal pos. of the pipes used for renderer simplification */
-    unsigned int y; /* the vertical pos. of the bottom of the top pipe.
-                    the pipe gap size will be added to this value to
-                    determine the vertical pos. of the top of the bottom pipe */
+    int x;               /* each set of pipes has a continuously changing horizontal pos. */
+    int prev_x;          /* the previous horizontal pos. of the pipes used for renderer simplification */
+    unsigned int y;      /* the vertical pos. of the bottom of the top pipe.
+                         the pipe gap size will be added to this value to
+                         determine the vertical pos. of the top of the bottom pipe */
     unsigned int prev_y; /* the previous vertical pos. */
 } SetOfPipes;
 
