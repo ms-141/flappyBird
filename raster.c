@@ -542,28 +542,3 @@ UINT16 *get_video_base()
 
     return (UINT16 *)address;
 }
-
-/*----- Function: set_video_base -----
-
- PURPOSE: Sets the frame buffer start address in the video base register.
-          This replaces the TOS Setscreen system call.
-          Note: The actual page flip occurs at the next VSYNC.
-
- INPUT: Address(UINT16*): pointer to the new frame buffer start address
-
- OUTPUT: None
-
-*/
-
-/* void set_video_base(UINT16 *address)
-{
-    long old_ssp;
-    volatile UINT8 *video_base_hi = (volatile UINT8 *)0xFF8201;
-    volatile UINT8 *video_base_mid = (volatile UINT8 *)0xFF8203;
-    UINT32 addr = (UINT32)address;
-
-    old_ssp = Super(0);
-    *video_base_hi = (UINT8)(addr >> 16);
-    *video_base_mid = (UINT8)(addr >> 8);
-    Super(old_ssp);
-} */
