@@ -1,4 +1,12 @@
-		;----- Function: set_video_base -----
+ 		;File: setvideo.s
+		;
+  		;Team Members: Muji Shah, Gurshan Chera, Declan McCarthy
+  		;Date Created: April 3, 2026
+		;
+  		;Description:
+  		;This file replaces the set_screen TOS function call.
+ 
+		;----- Function: _set_video_base -----
 		;
  		;PURPOSE: Sets the frame buffer start address in the video base register.
           ;This replaces the TOS Setscreen system call.
