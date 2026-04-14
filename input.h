@@ -8,7 +8,6 @@
  * Defines the input routines needed for the game.
  *
  * File Status:
- *
  */
 #ifndef INPUT_H
 #define INPUT_H

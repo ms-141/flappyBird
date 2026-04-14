@@ -7,8 +7,7 @@
  * Description:
  * This file implements functions which will utilize the psg.c library to play music in the game.
  *
- * File Status: created a new function to enable the music channel A in case it gets disabled.
- *
+ * File Status:
  */
 #include "music.h"
 

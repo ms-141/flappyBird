@@ -1,3 +1,15 @@
+/*
+ * File: fxTST.c
+ *
+ * Team Members: Muji Shah, Gurshan Chera, Declan McCarthy
+ * Date Created: March 29, 2026
+ *
+ * Description:
+ * Test driver for the effects.
+ *
+ * File Status:
+ */
+
 #include <osbind.h>
 #include "effects.h"
 #include "psg.h"

@@ -10,8 +10,6 @@
  * retrying after game over, and quitting to the menu after game over.
  *
  * File Status: 
- * Currently, the user inputs are not actually grabbed, but they 
- * should work as intended when called.
 */
 
 #ifndef ASYNCH_H

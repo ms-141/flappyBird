@@ -8,8 +8,6 @@
  * Test driver for the music.
  *
  * File Status: 
- * Need to implement test for menu music intuitively
- * 
 */
 
 #include "music.h"

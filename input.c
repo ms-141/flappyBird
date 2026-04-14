@@ -8,7 +8,6 @@
  * This file wraps underlying, O/S-specific code for performing keyboard input.
  *
  * File Status:
- *
  */
 
 #include "input.h"

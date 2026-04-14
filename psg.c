@@ -8,7 +8,6 @@
  * This file implements the PSG chip functions which will be used to play music and sound effects in the game.
  *
  * File Status:
- *
  */
 
 #include <osbind.h>

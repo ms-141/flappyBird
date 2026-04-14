@@ -1,3 +1,15 @@
+/*
+ * File: psgTST.c
+ *
+ * Team Members: Muji Shah, Gurshan Chera, Declan McCarthy
+ * Date Created: March 21, 2026
+ *
+ * Description:
+ * Test driver for the PSG chip.
+ *
+ * File Status:
+ */
+
 #include "psg.h"
 #include <osbind.h>
 

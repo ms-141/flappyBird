@@ -8,8 +8,6 @@
  * Test driver for the renderer.
  *
  * File Status:
- * Since clock ticks are used yet, things like the bird jumping,
- * or the pipes moving are done instantly (instead of over time).
  */
 
 #include <stdio.h>

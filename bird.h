@@ -10,7 +10,6 @@
  * that changes based on user input and constant falling.
  *
  * File Status:
- *
  */
 
 #ifndef BIRD_H

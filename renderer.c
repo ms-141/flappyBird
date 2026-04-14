@@ -8,13 +8,6 @@
  * This file implements the functions for the Renderer routines.
  *
  * File Status:
- * There is 1 obvious possible optimization:
- * Only draw and clear a line of pixels for the top and bottom pipes,
- * instead of clearing and redrawing the entire rectangle.
- *
- * Even though the score gets cleared and drawn every tick, this
- * is fine because the clearing ensures that the pipes don't
- * cover the score and make it impossible to see.
  */
 
 #include <stdio.h>

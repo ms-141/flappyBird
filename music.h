@@ -8,7 +8,6 @@
  * This file defines the functions for playing music in the game.
  * 
  * File Status: 
- *
 */
 
 #ifndef MUSIC_H
