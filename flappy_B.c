@@ -253,6 +253,7 @@ int make_splash_screen(UINT8 *base)
 {
     SCANCODE scancode;
     int mx, my, left_was_down, left_now;
+    char high_score_str[20];
 
     /* Button regions (row_top, row_bot, col_left, col_right) */
     const int BTN1_TOP = 170, BTN1_BOT = 195, BTN1_LEFT = 260, BTN1_RIGHT = 395;
@@ -269,6 +270,10 @@ int make_splash_screen(UINT8 *base)
 
     /* title */
     plot_string((UINT8 *)base, 140, 285, "FLAPPY BIRD");
+
+    /* high score */
+    sprintf(high_score_str, "High Score: %u", model.score.high_score);
+    plot_string((UINT8 *)base, 155, 275, high_score_str);
 
     /* button labels */
     plot_string((UINT8 *)base, 175, 270, "1 - One Player");
