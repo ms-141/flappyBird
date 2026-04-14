@@ -272,13 +272,13 @@ int make_splash_screen(UINT8 *base)
     /* title */
     plot_string((UINT8 *)base, 140, 285, "FLAPPY BIRD");
 
-    /* high score */
-    sprintf(high_score_str, "High Score: %u", model.score.high_score);
-    plot_string((UINT8 *)base, 155, 275, high_score_str);
-
     /* button labels */
     plot_string((UINT8 *)base, 175, 270, "1 - One Player");
     plot_string((UINT8 *)base, 205, 270, "Q - Quit Game");
+
+    /* high score */
+    sprintf(high_score_str, "High Score: %u", model.score.high_score);
+    plot_string((UINT8 *)base, 245, 275, high_score_str);
 
     /* "1 Player" button outline */
     plot_horizontal_line((UINT32 *)base, BTN1_TOP, BTN1_LEFT, BTN1_RIGHT - BTN1_LEFT);
