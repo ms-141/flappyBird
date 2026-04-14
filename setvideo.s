@@ -1,3 +1,13 @@
+		;----- Function: set_video_base -----
+		;
+ 		;PURPOSE: Sets the frame buffer start address in the video base register.
+          ;This replaces the TOS Setscreen system call.
+          ;Note: The actual page flip occurs at the next VSYNC.
+		;
+ 		;INPUT: Address(UINT16*): pointer to the new frame buffer start address
+		;
+ 		;OUTPUT: None
+		
 		xdef _set_video_base
 
 _set_video_base:
